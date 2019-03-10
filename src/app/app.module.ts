@@ -7,18 +7,22 @@ import { StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { AppEffects } from './app.effects';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     StoreModule.forRoot(reducers, { metaReducers }),
-    EffectsModule.forRoot([AppEffects])
+    EffectsModule.forRoot([AppEffects]),
+    BrowserAnimationsModule,
+    CoreModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

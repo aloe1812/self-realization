@@ -1,0 +1,104 @@
+// reset
+
+html,
+body,
+p,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+blockquote,
+figure,
+fieldset,
+legend,
+textarea,
+pre,
+iframe,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 100%;
+  font-weight: normal;
+}
+
+ul {
+  list-style: none;
+}
+
+/**
+ * 1. Change the font styles in all browsers.
+ */
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit; /* 1 */
+  font-size: 100%; /* 1 */
+  line-height: 1.15; /* 1 */
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/**
+ * Remove the border on images inside links in IE 10.
+ */
+img {
+  height: auto;
+  max-width: 100%;
+  border-style: none;
+}
+
+// normalize
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+
+ html {
+  line-height: 1.15; /* 1 */
+  -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+/**
+ * Remove the gray background on active links in IE 10.
+ */
+
+ a {
+  background-color: transparent;
+}
+
+/**
+ * Remove the inner border and padding in Firefox.
+ */
+
+ button::-moz-focus-inner,
+ [type="button"]::-moz-focus-inner,
+ [type="reset"]::-moz-focus-inner,
+ [type="submit"]::-moz-focus-inner {
+   border-style: none;
+   padding: 0;
+ }
