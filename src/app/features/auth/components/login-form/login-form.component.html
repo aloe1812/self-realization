@@ -3,19 +3,32 @@
     <mat-card-title>Login / Register</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <form>
+    <form [formGroup]="form" (submit)="onSubmit($event)">
       <mat-form-field>
-        <input matInput placeholder="Username">
+        <input matInput placeholder="Username" formControlName="username">
         <mat-icon matSuffix>account_box</mat-icon>
+        <mat-error *ngIf="!!form.controls.username.hasError('required')">
+          Username is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="!!form.controls.username.hasError('minlength')">
+          Username must be at least <strong>{{ form.controls['username'].errors.minlength.requiredLength }}</strong> characters long
+        </mat-error>
       </mat-form-field>
       <mat-form-field>
-        <input matInput placeholder="Password" type="password">
+        <input matInput placeholder="Password" type="password" formControlName="password">
         <mat-icon matSuffix>lock</mat-icon>
+        <mat-error *ngIf="!!form.controls.password.hasError('required')">
+          Password is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="!!form.controls.password.hasError('minlength')">
+          Password must be at least <strong>{{ form.controls['password'].errors.minlength.requiredLength }}</strong> characters long
+        </mat-error>
       </mat-form-field>
+      <button type="submit" #submitBtn hidden></button>
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-stroked-button color="primary">Login</button>
-    <button mat-stroked-button color="accent">Register</button>
+    <button mat-stroked-button color="primary" [class.is-loading]="loginPending" (click)="submit('login')">Login</button>
+    <button mat-stroked-button color="accent" [class.is-loading]="registerPending" (click)="submit('register')">Register</button>
   </mat-card-actions>
 </mat-card>

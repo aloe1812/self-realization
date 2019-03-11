@@ -4,6 +4,11 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <section class="main">
-  <app-login-form></app-login-form>
+  <app-login-form
+    [loginPending]="loadingPending$ | async"
+    [registerPending]="registerPending$ | async"
+    (login)="onLogin($event)"
+    (register)="onRegister($event)"
+  ></app-login-form>
   <app-about-site></app-about-site>
 </section>
