@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
+import { appConfigProvider } from './config/app.config';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import { environment } from '../environments/environment';
     CoreModule,
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
   ],
-  providers: [],
+  providers: [appConfigProvider],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

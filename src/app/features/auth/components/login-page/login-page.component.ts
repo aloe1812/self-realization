@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Inject, Renderer2, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromAuth from './../../reducers';
-import * as AuthActions from '../../auth.actions';
+import * as AuthActions from '../../actions/auth.actions';
 import { Authenticate } from '../../models';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-login-page',
@@ -10,15 +11,24 @@ import { Authenticate } from '../../models';
   styleUrls: ['./login-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit, OnDestroy {
 
   error$ = this.store.pipe(select(fromAuth.selectError));
   loadingPending$ = this.store.pipe(select(fromAuth.selectLoginPending));
   registerPending$ = this.store.pipe(select(fromAuth.selectRegisterPending));
 
-  constructor(private store: Store<fromAuth.State>) {}
+  constructor(
+    private store: Store<fromAuth.State>,
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2,
+  ) {}
 
   ngOnInit() {
+    this.renderer.addClass(this.document.body, 'login-page');
+  }
+
+  ngOnDestroy() {
+    this.renderer.removeClass(this.document.body, 'login-page');
   }
 
   onLogin(event: Authenticate) {

@@ -13,7 +13,11 @@ export class AuthService {
   ) { }
 
   signIn(auth: Authenticate): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>('http://localhost:3000/auth/signin', auth);
+    return this.http.post<AuthResponse>('/auth/signin', auth);
+  }
+
+  signUp(auth: Authenticate): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('/auth/signup', auth);
   }
 
 }

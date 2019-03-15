@@ -1,49 +1,54 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Login, AuthActionTypes } from '../auth.actions';
-import { catchError, exhaustMap, map, tap } from 'rxjs/operators';
+import { AuthActionTypes } from '../actions/auth.actions';
+import * as AuthActions from '../actions/auth.actions';
+import { catchError, exhaustMap, map, tap, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import * as AuthActions from '../auth.actions';
 import { Authenticate } from '../models';
 import { Router } from '@angular/router';
+import * as UserActions from '../../../core/actions/user.actions';
 
 @Injectable()
 export class AuthEffects {
 
   @Effect()
   login$ = this.actions$.pipe(
-    ofType<Login>(AuthActionTypes.Login),
+    ofType<AuthActions.Login>(AuthActionTypes.Login),
     map(action => action.payload),
     exhaustMap((auth: Authenticate) =>
       this.authService.signIn(auth).pipe(
         map(user => new AuthActions.LoginSuccess(user)),
-        catchError(error => of(new AuthActions.AuthFailure())),
+        catchError(error => of(new AuthActions.AuthFailure(error))),
       ),
     ),
   );
 
   @Effect()
   register$ = this.actions$.pipe(
-    ofType<Login>(AuthActionTypes.Register),
+    ofType<AuthActions.Register>(AuthActionTypes.Register),
     map(action => action.payload),
     exhaustMap((auth: Authenticate) =>
-      this.authService.signIn(auth).pipe(
+      this.authService.signUp(auth).pipe(
         map(user => new AuthActions.RegisterSuccess(user)),
-        catchError(error => of(new AuthActions.AuthFailure())),
+        catchError(error => of(new AuthActions.AuthFailure(error))),
       ),
     ),
   );
 
-  @Effect({ dispatch: false })
+  @Effect()
   loginSuccess$ = this.actions$.pipe(
-    ofType(AuthActionTypes.LoginSuccess),
+    ofType<AuthActions.LoginSuccess>(AuthActionTypes.LoginSuccess),
+    map(action => action.payload),
+    switchMap(user => of(new UserActions.Save(user))),
     tap(() => this.router.navigate(['/day'])),
   );
 
-  @Effect({ dispatch: false })
+  @Effect()
   registerSuccess$ = this.actions$.pipe(
-    ofType(AuthActionTypes.RegisterSuccess),
+    ofType<AuthActions.RegisterSuccess>(AuthActionTypes.RegisterSuccess),
+    map(action => action.payload),
+    switchMap(user => of(new UserActions.Save(user))),
     tap(() => this.router.navigate(['/profile'])),
   );
 

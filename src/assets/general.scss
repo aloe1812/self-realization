@@ -1,0 +1,23 @@
+html, body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// remove chrome autofill
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active  {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+button[disabled], .mat-stroked-button[disabled] {
+  cursor: not-allowed;
+}
+
+.login-page {
+  background-color: #fafafa;
+}

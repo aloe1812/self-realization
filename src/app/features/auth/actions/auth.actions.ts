@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
-import { Authenticate, AuthResponse } from './models';
+import { Authenticate, AuthResponse } from '../models';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export enum AuthActionTypes {
   Login = '[Auth] Login',
@@ -37,6 +38,8 @@ export class RegisterSuccess implements Action {
 
 export class AuthFailure implements Action {
   readonly type = AuthActionTypes.AuthFailure;
+
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export type AuthActionsUnion =

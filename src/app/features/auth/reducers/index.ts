@@ -2,10 +2,11 @@ import {
   createFeatureSelector,
   createSelector,
 } from '@ngrx/store';
-import { AuthActionsUnion, AuthActionTypes } from '../auth.actions';
+import { AuthActionsUnion, AuthActionTypes } from '../actions/auth.actions';
+import { extractErrorMessage } from '../../../utils/common';
 
 export interface State {
-  error: string | undefined;
+  error: string;
   loginPending: boolean;
   registerPending: boolean;
 }
@@ -31,8 +32,8 @@ export function reducer(state = initialState, action: AuthActionsUnion): State {
       return {
         ...state,
         error: undefined,
-        loginPending: true,
-        registerPending: false,
+        loginPending: false,
+        registerPending: true,
       };
     }
 
@@ -49,7 +50,7 @@ export function reducer(state = initialState, action: AuthActionsUnion): State {
     case AuthActionTypes.AuthFailure: {
       return {
         ...state,
-        error: 'Server Error',
+        error: extractErrorMessage(action.payload),
         loginPending: false,
         registerPending: false,
       };

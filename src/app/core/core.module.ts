@@ -7,6 +7,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './effects/user.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../../environments/environment';
+import { httpInterceptorProviders } from './interceptors';
 
 @NgModule({
   declarations: [],
@@ -19,6 +20,9 @@ import { environment } from '../../environments/environment';
       maxAge: 25,
       logOnly: environment.production,
     }),
+  ],
+  providers: [
+    httpInterceptorProviders,
   ],
 })
 export class CoreModule { }

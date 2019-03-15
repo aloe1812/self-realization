@@ -5,6 +5,7 @@
 </mat-toolbar>
 <section class="main">
   <app-login-form
+    [error]="error$ | async"
     [loginPending]="loadingPending$ | async"
     [registerPending]="registerPending$ | async"
     (login)="onLogin($event)"

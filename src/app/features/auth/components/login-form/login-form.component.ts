@@ -1,6 +1,9 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef,
+         ChangeDetectionStrategy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Authenticate } from '../../models';
+import { race } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 enum SubmitType {
   Login,
@@ -13,12 +16,14 @@ enum SubmitType {
   styleUrls: ['./login-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent implements OnInit, OnChanges {
 
+  @Input() error: string;
   @Input() loginPending: boolean;
   @Input() registerPending: boolean;
 
-  @ViewChild('submitBtn') submitBtn: ElementRef; // FIXME: comments
+  // hidden submit button in order to submit form after click on login and register button (as there is no programmatic way to do it)
+  @ViewChild('submitBtn') submitBtn: ElementRef;
 
   @Output() login = new EventEmitter<Authenticate>();
   @Output() register = new EventEmitter<Authenticate>();
@@ -33,6 +38,24 @@ export class LoginFormComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.error && changes.error.currentValue) {
+      const controls = [this.form.controls.username, this.form.controls.password];
+      controls.forEach(c => c.setErrors({ apiError: true }));
+
+      // remove errors on any input change
+      race(controls.map(c => c.valueChanges))
+        .pipe(take(1))
+        .subscribe(() => {
+          this.error = undefined;
+          controls.forEach(c => {
+            c.setErrors({ apiError: false });
+            c.updateValueAndValidity();
+          });
+        });
+    }
   }
 
   submit(type: 'login' | 'register') {
