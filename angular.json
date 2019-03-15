@@ -13,8 +13,8 @@
           "style": "scss",
           "skipTests": true
         },
-        "@ngrx/schematics/angular:component": {
-          "style": "scss",
+        "@ngrx/schematics:component": {
+          "styleext": "scss",
           "skipTests": true
         },
         "@schematics/angular:class": {

@@ -17,16 +17,34 @@ export class AuthEffects {
     map(action => action.payload),
     exhaustMap((auth: Authenticate) =>
       this.authService.signIn(auth).pipe(
-        map((user: any) => new AuthActions.AuthSuccess()),
-        catchError(error => of(new AuthActions.AuthSuccess())),
+        map(user => new AuthActions.LoginSuccess(user)),
+        catchError(error => of(new AuthActions.AuthFailure())),
+      ),
+    ),
+  );
+
+  @Effect()
+  register$ = this.actions$.pipe(
+    ofType<Login>(AuthActionTypes.Register),
+    map(action => action.payload),
+    exhaustMap((auth: Authenticate) =>
+      this.authService.signIn(auth).pipe(
+        map(user => new AuthActions.RegisterSuccess(user)),
+        catchError(error => of(new AuthActions.AuthFailure())),
       ),
     ),
   );
 
   @Effect({ dispatch: false })
-  authSuccess$ = this.actions$.pipe(
-    ofType(AuthActionTypes.AuthSuccess),
+  loginSuccess$ = this.actions$.pipe(
+    ofType(AuthActionTypes.LoginSuccess),
     tap(() => this.router.navigate(['/day'])),
+  );
+
+  @Effect({ dispatch: false })
+  registerSuccess$ = this.actions$.pipe(
+    ofType(AuthActionTypes.RegisterSuccess),
+    tap(() => this.router.navigate(['/profile'])),
   );
 
   constructor(

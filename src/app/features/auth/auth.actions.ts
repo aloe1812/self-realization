@@ -1,11 +1,13 @@
 import { Action } from '@ngrx/store';
-import { Authenticate } from './models';
+import { Authenticate, AuthResponse } from './models';
 
 export enum AuthActionTypes {
   Login = '[Auth] Login',
   Register = '[Auth] Register',
 
-  AuthSuccess = '[Auth] Auth Success',
+  LoginSuccess = '[Auth] Login Success',
+  RegisterSuccess = '[Auth] Register Success',
+
   AuthFailure = '[Auth] Auth Failure',
 }
 
@@ -21,8 +23,16 @@ export class Register implements Action {
   constructor(public payload: Authenticate) {}
 }
 
-export class AuthSuccess implements Action {
-  readonly type = AuthActionTypes.AuthSuccess;
+export class LoginSuccess implements Action {
+  readonly type = AuthActionTypes.LoginSuccess;
+
+  constructor(public payload: AuthResponse) {}
+}
+
+export class RegisterSuccess implements Action {
+  readonly type = AuthActionTypes.RegisterSuccess;
+
+  constructor(public payload: AuthResponse) {}
 }
 
 export class AuthFailure implements Action {
@@ -32,5 +42,6 @@ export class AuthFailure implements Action {
 export type AuthActionsUnion =
   | Login
   | Register
-  | AuthSuccess
+  | LoginSuccess
+  | RegisterSuccess
   | AuthFailure;

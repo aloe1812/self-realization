@@ -1,11 +1,7 @@
 import {
-  ActionReducer,
-  ActionReducerMap,
   createFeatureSelector,
   createSelector,
-  MetaReducer,
 } from '@ngrx/store';
-import { environment } from '../../../../environments/environment';
 import { AuthActionsUnion, AuthActionTypes } from '../auth.actions';
 
 export interface State {
@@ -21,7 +17,6 @@ export const initialState: State = {
 };
 
 export function reducer(state = initialState, action: AuthActionsUnion): State {
-
   switch (action.type) {
     case AuthActionTypes.Login: {
       return {
@@ -41,7 +36,8 @@ export function reducer(state = initialState, action: AuthActionsUnion): State {
       };
     }
 
-    case AuthActionTypes.AuthSuccess: {
+    case AuthActionTypes.LoginSuccess:
+    case AuthActionTypes.RegisterSuccess: {
       return {
         ...state,
         error: undefined,
