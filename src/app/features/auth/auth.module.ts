@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth-routing.module';
-import { MatCardModule, MatButtonModule, MatInputModule, MatIconModule, MatToolbarModule } from '@angular/material';
+import { MatCardModule, MatButtonModule, MatInputModule, MatIconModule } from '@angular/material';
 import { LoginPageComponent } from './components/login-page/login-page.component';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { AboutSiteComponent } from './components/about-site/about-site.component';
@@ -20,7 +20,6 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatButtonModule,
     MatInputModule,
     MatIconModule,
-    MatToolbarModule,
     StoreModule.forFeature('auth', fromAuth.reducer),
     EffectsModule.forFeature([AuthEffects]),
     FormsModule,
