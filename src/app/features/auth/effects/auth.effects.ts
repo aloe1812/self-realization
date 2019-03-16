@@ -58,7 +58,7 @@ export class AuthEffects {
     map(action => action.payload),
     switchMap(user => [
       new UserActions.Save(user),
-      new AuthActions.LoginRedirect(),
+      new AuthActions.RegisterRedirect(),
     ]),
   );
 
