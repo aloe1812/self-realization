@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
@@ -8,6 +8,8 @@ import { UserEffects } from './effects/user.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../../environments/environment';
 import { httpInterceptorProviders } from './interceptors';
+import { UserService } from './services/user.service';
+import { InitService } from './services/init.service';
 
 @NgModule({
   declarations: [],
@@ -23,6 +25,14 @@ import { httpInterceptorProviders } from './interceptors';
   ],
   providers: [
     httpInterceptorProviders,
+    UserService,
+    InitService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (init: InitService) => () => init.init(),
+      deps: [InitService],
+      multi: true,
+    },
   ],
 })
 export class CoreModule { }

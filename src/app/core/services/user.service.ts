@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +10,8 @@ export class UserService {
     private http: HttpClient,
   ) { }
 
-  getMe(token: string): Observable<any> {
-    return this.http.get('http://localhost:3000/auth/me', {
+  getMe(token: string) {
+    return this.http.get<{username: string}>('/auth/me', {
       headers: new HttpHeaders({
         Authorization: `Bearer ${token}`,
       }),
