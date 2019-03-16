@@ -8,9 +8,15 @@ import { tap } from 'rxjs/operators';
 export class UserEffects {
 
   @Effect({ dispatch: false })
-  registerSuccess$ = this.actions$.pipe(
+  redirectLogin$ = this.actions$.pipe(
     ofType(UserActionTypes.RedirectLogin),
     tap(() => this.router.navigate(['/login'])),
+  );
+
+  @Effect({ dispatch: false })
+  redirectDay$ = this.actions$.pipe(
+    ofType(UserActionTypes.RedirectDay),
+    tap(() => this.router.navigate(['/day'])),
   );
 
   constructor(

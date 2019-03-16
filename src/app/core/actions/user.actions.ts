@@ -5,6 +5,7 @@ export enum UserActionTypes {
   Remove = '[User] Remove',
 
   RedirectLogin = '[User] Redirect Login',
+  RedirectDay = '[User] Redirect Day',
 }
 
 export interface IUserDetails {
@@ -26,4 +27,8 @@ export class RedirectLogin implements Action {
   readonly type = UserActionTypes.RedirectLogin;
 }
 
-export type UserActionsUnion = Save | Remove | RedirectLogin;
+export class RedirectDay implements Action {
+  readonly type = UserActionTypes.RedirectDay;
+}
+
+export type UserActionsUnion = Save | Remove | RedirectLogin | RedirectDay;
