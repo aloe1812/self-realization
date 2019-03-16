@@ -1,0 +1,15 @@
+<article [ngClass]="group.type">
+  <mat-toolbar class="group-title">
+    <img [src]="icon" alt="">
+    <span>{{ title }}</span>
+    <button mat-icon-button matTooltip="Details" matTooltipClass="header-tooltip" (click)="toggleDetails()">
+      <mat-icon>expand_more</mat-icon>
+    </button>
+  </mat-toolbar>
+  <div class="main">
+    <div class="details" [@dropdown]="detailsState">{{ description }}</div>
+    <div class="goals">
+      <app-goal *ngFor="let goal of group.goals" [goal]="goal"></app-goal>
+    </div>
+  </div>
+</article>

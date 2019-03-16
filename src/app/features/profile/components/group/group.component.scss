@@ -1,0 +1,63 @@
+@import '../../../../../assets/styles/variables.scss';
+
+article {
+  .group-title {
+    height: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 4px;
+    img {
+      height: 50px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.main {
+  display: flex;
+  align-items: flex-start;
+  .details {
+    flex: 0 0 280px;
+    align-items: flex-start;
+    margin-right: 10px;
+    border-radius: 0 0 4px 4px;
+    padding: 14px;
+    overflow: hidden;
+    position: relative;
+    z-index: -1;
+    margin-top: -4px;
+  }
+  .goals {
+    flex: 1 1 auto;
+    background: #fff;
+    align-self: stretch;
+  }
+}
+
+
+article.mind {
+  .group-title {
+   background: $mindColor;
+  }
+  .main .details {
+    background: rgba($mindColor, 0.75);
+  }
+}
+
+article.body {
+  .group-title {
+    background: $bodyColor;
+   }
+   .main .details {
+     background: rgba($bodyColor, 0.75);
+   }
+}
+
+article.soul {
+  .group-title {
+    background: $soulColor;
+   }
+   .main .details {
+     background: rgba($soulColor, 0.75);
+   }
+}
