@@ -10,6 +10,9 @@ export enum AuthActionTypes {
   RegisterSuccess = '[Auth] Register Success',
 
   AuthFailure = '[Auth] Auth Failure',
+
+  LoginRedirect = '[Auth] Login Redirect',
+  RegisterRedirect = '[Auth] Register Redirect',
 }
 
 export class Login implements Action {
@@ -42,9 +45,19 @@ export class AuthFailure implements Action {
   constructor(public payload: HttpErrorResponse) {}
 }
 
+export class LoginRedirect implements Action {
+  readonly type = AuthActionTypes.LoginRedirect;
+}
+
+export class RegisterRedirect implements Action {
+  readonly type = AuthActionTypes.RegisterRedirect;
+}
+
 export type AuthActionsUnion =
   | Login
   | Register
   | LoginSuccess
   | RegisterSuccess
-  | AuthFailure;
+  | AuthFailure
+  | LoginRedirect
+  | RegisterRedirect;

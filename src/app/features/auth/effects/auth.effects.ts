@@ -40,7 +40,15 @@ export class AuthEffects {
   loginSuccess$ = this.actions$.pipe(
     ofType<AuthActions.LoginSuccess>(AuthActionTypes.LoginSuccess),
     map(action => action.payload),
-    switchMap(user => of(new UserActions.Save(user))),
+    switchMap(user => [
+      new UserActions.Save(user),
+      new AuthActions.LoginRedirect(),
+    ]),
+  );
+
+  @Effect({ dispatch: false })
+  loginRedirect$ = this.actions$.pipe(
+    ofType<AuthActions.LoginRedirect>(AuthActionTypes.LoginRedirect),
     tap(() => this.router.navigate(['/day'])),
   );
 
@@ -48,7 +56,15 @@ export class AuthEffects {
   registerSuccess$ = this.actions$.pipe(
     ofType<AuthActions.RegisterSuccess>(AuthActionTypes.RegisterSuccess),
     map(action => action.payload),
-    switchMap(user => of(new UserActions.Save(user))),
+    switchMap(user => [
+      new UserActions.Save(user),
+      new AuthActions.LoginRedirect(),
+    ]),
+  );
+
+  @Effect({ dispatch: false })
+  registerRedirect$ = this.actions$.pipe(
+    ofType<AuthActions.RegisterRedirect>(AuthActionTypes.RegisterRedirect),
     tap(() => this.router.navigate(['/profile'])),
   );
 
