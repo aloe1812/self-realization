@@ -13,6 +13,7 @@ import { InitService } from './services/init.service';
 import { HeaderComponent } from './components/header/header.component';
 import { MatToolbarModule, MatIconModule, MatButtonModule, MatDialogModule, MatTooltipModule } from '@angular/material';
 import { ConfirmLogoutDialogComponent } from './components/confirm-logout-dialog/confirm-logout-dialog.component';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [HeaderComponent, ConfirmLogoutDialogComponent],
@@ -25,6 +26,7 @@ import { ConfirmLogoutDialogComponent } from './components/confirm-logout-dialog
       maxAge: 25,
       logOnly: environment.production,
     }),
+    RouterModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
