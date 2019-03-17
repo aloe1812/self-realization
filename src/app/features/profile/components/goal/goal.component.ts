@@ -29,7 +29,13 @@ export class GoalComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.goal && !changes.goal.firstChange) {
+    if (!(changes.goal && !changes.goal.firstChange)) {
+      return;
+    }
+
+    if (changes.goal.currentValue.title === changes.goal.previousValue.title) { // same goal returned => update failed
+      this.isSaving = false;
+    } else {
       this.setPristine();
     }
   }

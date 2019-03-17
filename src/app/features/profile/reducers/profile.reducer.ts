@@ -92,6 +92,22 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
       };
     }
 
+    case ProfileActionTypes.UpdateGoalFail: {
+      const { goalData: { groupType, goal } } = action.payload;
+      const goalsKey = `${groupType}Goals`;
+
+      return {
+        ...state,
+        [goalsKey]: {
+          byId: {
+            ...state[goalsKey].byId,
+            [goal._id]: { ...state[goalsKey].byId[goal._id] },
+          },
+          allIds: [...state[goalsKey].allIds],
+        },
+      };
+    }
+
     default:
       return state;
   }

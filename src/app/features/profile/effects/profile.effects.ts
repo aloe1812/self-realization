@@ -3,11 +3,12 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { ProfileActionTypes } from '../actions/profile.actions';
 import * as fromProfile from '../reducers/profile.reducer';
 import * as ProfileActions from '../actions/profile.actions';
-import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom, tap } from 'rxjs/operators';
 import { ProfileService } from '../services/profile.service';
 import { of } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class ProfileEffects {
@@ -39,15 +40,26 @@ export class ProfileEffects {
             goal,
             groupType: updateData.groupType,
           })),
-          catchError((error: HttpErrorResponse) => of(new ProfileActions.LoadGoalsFail(error))),
+          catchError((error: HttpErrorResponse) => of(new ProfileActions.UpdateGoalFail({
+            goalData: updateData,
+            message: 'Update failed!',
+          }))),
         ),
     ),
+  );
+
+  @Effect({ dispatch: false })
+  updateGoalsFail$ = this.actions$.pipe(
+    ofType<ProfileActions.UpdateGoalFail>(ProfileActionTypes.UpdateGoalFail),
+    map(action => action.payload.message),
+    tap(message => this.snackBar.open(message, 'Got it', { duration: 2000 })),
   );
 
   constructor(
     private actions$: Actions,
     private profileService: ProfileService,
     private store: Store<fromProfile.State>,
+    private snackBar: MatSnackBar,
   ) {}
 
 }
