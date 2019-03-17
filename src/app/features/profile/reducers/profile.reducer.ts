@@ -21,21 +21,29 @@ function goalsNormalizer(result: NormalizedGoals, goal: IDefaultGoal) {
 
 export interface State {
   loading: boolean;
+
   groupsId: {
     [key: string]: string;
   };
-  mindGoals: NormalizedGoals;
-  bodyGoals: NormalizedGoals;
-  soulGoals: NormalizedGoals;
+
+  goals: {
+    [key: string]: NormalizedGoals;
+  };
+
+  addGoal: {
+    [key: string]: boolean;
+  };
+
   error: string;
 }
 
 export const initialState: State = {
   loading: true,
+
   groupsId: undefined,
-  mindGoals: undefined,
-  bodyGoals: undefined,
-  soulGoals: undefined,
+  goals: undefined,
+  addGoal: undefined,
+
   error: undefined,
 };
 
@@ -50,13 +58,14 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
     case ProfileActionTypes.LoadGoalsSuccess: {
       const goals = {} as { [key: string]: NormalizedGoals };
       const groupsId = {} as { [key: string]: string };
+      const addGoal = {} as { [key: string]: boolean };
 
       action.payload
         .filter(g => GroupTypes.indexOf(g.type) !== -1)
         .forEach(group => {
-          const goalsKey = `${group.type}Goals`;
           groupsId[group.type] = group._id;
-          goals[goalsKey] = group.goals.reduce(goalsNormalizer, { byId: {}, allIds: [] } as NormalizedGoals);
+          goals[group.type] = group.goals.reduce(goalsNormalizer, { byId: {}, allIds: [] } as NormalizedGoals);
+          addGoal[group.type] = false;
         });
 
       return {
@@ -64,7 +73,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
         loading: false,
         error: undefined,
         groupsId,
-        ...goals,
+        goals,
+        addGoal,
       };
     }
 
@@ -78,47 +88,82 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
     case ProfileActionTypes.UpdateGoalSuccess: {
       const { groupType, goal } = action.payload;
-      const goalsKey = `${groupType}Goals`;
+      const groupGoals = state.goals[groupType];
 
       return {
         ...state,
-        [goalsKey]: {
-          byId: {
-            ...state[goalsKey].byId,
-            [goal._id]: { ...goal },
+        goals: {
+          ...state.goals,
+          [groupType]: {
+            byId: {
+              ...groupGoals.byId,
+              [goal._id]: { ...goal },
+            },
+            allIds: [...groupGoals.allIds],
           },
-          allIds: [...state[goalsKey].allIds],
         },
       };
     }
 
     case ProfileActionTypes.UpdateGoalFail: {
       const { goalData: { groupType, goal } } = action.payload;
-      const goalsKey = `${groupType}Goals`;
+      const groupGoals = state.goals[groupType];
 
       return {
         ...state,
-        [goalsKey]: {
-          byId: {
-            ...state[goalsKey].byId,
-            [goal._id]: { ...state[goalsKey].byId[goal._id] },
+        goals: {
+          ...state.goals,
+          [groupType]: {
+            byId: {
+              ...groupGoals.byId,
+              [goal._id]: { ...groupGoals.byId[goal._id] },
+            },
+            allIds: [...groupGoals.allIds],
           },
-          allIds: [...state[goalsKey].allIds],
         },
       };
     }
 
     case ProfileActionTypes.DeleteGoalSuccess: {
       const { groupType, goal } = action.payload;
-      const goalsKey = `${groupType}Goals`;
-
-      const { [goal._id]: deleted, ...restById } = state[goalsKey].byId;
+      const groupGoals = state.goals[groupType];
+      const { [goal._id]: deleted, ...restById } = groupGoals.byId;
+      const newIds = groupGoals.allIds.filter(id => id !== goal._id);
 
       return {
         ...state,
-        [goalsKey]: {
-          byId: restById,
-          allIds: (state[goalsKey] as NormalizedGoals).allIds.filter(id => id !== goal._id),
+        goals: {
+          ...state.goals,
+          [groupType]: {
+            byId: {
+              ...restById,
+            },
+            allIds: newIds,
+          },
+        },
+      };
+    }
+
+    case ProfileActionTypes.AddGoal: {
+      const type = action.payload;
+
+      return {
+        ...state,
+        addGoal: {
+          ...state.addGoal,
+          [type]: true,
+        },
+      };
+    }
+
+    case ProfileActionTypes.RemoveGoal: {
+      const type = action.payload;
+
+      return {
+        ...state,
+        addGoal: {
+          ...state.addGoal,
+          [type]: false,
         },
       };
     }
@@ -136,19 +181,40 @@ export const selectLoading = createSelector(
   (state: State) => state.loading,
 );
 
-export const selectMindGoals = createSelector(
+export const selectGroups = createSelector(
   selectProfileState,
-  (state: State) => state.mindGoals.allIds.map(id => state.mindGoals.byId[id]),
+  (state: State) => {
+    if (!state.goals) {
+      return undefined;
+    }
+
+    const sort = enumToArray(GroupType);
+
+    return Object.keys(state.goals)
+      .sort((a: GroupType, b: GroupType) => {
+        const indexA = sort.indexOf(a);
+        const indexB = sort.indexOf(b);
+        return indexA - indexB;
+      })
+      .map(type => {
+        const normalized = state.goals && state.goals[type];
+
+        return {
+          type,
+          goals: normalized ? normalized.allIds.map(id => normalized.byId[id]) : undefined,
+        };
+      });
+  },
 );
 
-export const selectBodyGoals = createSelector(
+export const selectGroupsIds = createSelector(
   selectProfileState,
-  (state: State) => state.bodyGoals.allIds.map(id => state.bodyGoals.byId[id]),
+  (state: State) => state.groupsId,
 );
 
-export const selectSoulGoals = createSelector(
+export const selectAddGoal = createSelector(
   selectProfileState,
-  (state: State) => state.soulGoals.allIds.map(id => state.soulGoals.byId[id]),
+  (state: State) => state.addGoal,
 );
 
 export const selectError = createSelector(
@@ -156,7 +222,3 @@ export const selectError = createSelector(
   (state: State) => state.error,
 );
 
-export const selectGroupsIds = createSelector(
-  selectProfileState,
-  (state: State) => state.groupsId,
-);

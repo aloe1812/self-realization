@@ -34,7 +34,6 @@ article {
   }
 }
 
-
 article.mind {
   .group-title {
    background: $mindColor;
@@ -42,22 +41,46 @@ article.mind {
   .main .details {
     background: rgba($mindColor, 0.75);
   }
+  .add-goal-button {
+    background: $mindColor;
+    &[disabled] {
+      background: rgba($mindColor, 0.5);
+      color: #fff;
+      cursor: not-allowed;
+    }
+  }
 }
 
 article.body {
   .group-title {
     background: $bodyColor;
-   }
-   .main .details {
-     background: rgba($bodyColor, 0.75);
-   }
+  }
+  .main .details {
+    background: rgba($bodyColor, 0.75);
+  }
+  .add-goal-button {
+    background: $bodyColor;
+    &[disabled] {
+      background: rgba($bodyColor, 0.5);
+      color: #fff;
+      cursor: not-allowed;
+    }
+  }
 }
 
 article.soul {
   .group-title {
     background: $soulColor;
-   }
-   .main .details {
-     background: rgba($soulColor, 0.75);
-   }
+  }
+  .main .details {
+    background: rgba($soulColor, 0.75);
+  }
+  .add-goal-button {
+    background: darken($soulColor, 18%);
+    &[disabled] {
+      background: rgba(darken($soulColor, 18%), 0.5);
+      color: #fff;
+      cursor: not-allowed;
+    }
+  }
 }

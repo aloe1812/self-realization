@@ -13,6 +13,18 @@ import { FormControl } from '@angular/forms';
 export class GoalComponent implements OnInit, OnChanges {
 
   @Input() goal: IDefaultGoal;
+  @Input('isAdd')
+  set isAdd(value: boolean) {
+    if (typeof value === 'boolean') {
+      this._isAdd = value;
+    } else {
+      this._isAdd = value !== undefined;
+    }
+  }
+
+  get isAdd() {
+    return this._isAdd;
+  }
 
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
   @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
@@ -23,11 +35,17 @@ export class GoalComponent implements OnInit, OnChanges {
   isDeleting = false;
   isEdit = false;
 
+  // tslint:disable-next-line: variable-name
+  private _isAdd = false;
+
   constructor(
     private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
+    if (this.isAdd) {
+      this.isEdit = true;
+    }
     this.titleCtrl = new FormControl(this.goal.title);
   }
 
@@ -45,6 +63,11 @@ export class GoalComponent implements OnInit, OnChanges {
   }
 
   toggleEdit() {
+    if (this.isAdd) {
+      this.deleteGoal.next();
+      return;
+    }
+
     if (!this.titleCtrl) {
       this.titleCtrl = new FormControl(this.goal.title);
     }

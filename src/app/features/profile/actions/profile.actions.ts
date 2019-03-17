@@ -14,6 +14,11 @@ export enum ProfileActionTypes {
 
   DeleteGoal = '[Profile] Delete Goal',
   DeleteGoalSuccess = '[Profile] Delete Goal Success',
+
+  AddGoal = '[Profile] Add Goal',
+  RemoveGoal = '[Profile] Remove Goal',
+  SaveGoal = '[Profile] Save Goal',
+  SaveGoalSuccess = '[Profile] Save Goal Success',
 }
 
 export interface GoalPayload {
@@ -70,6 +75,18 @@ export class DeleteGoalSuccess implements Action {
   constructor(public payload: GoalPayload) {}
 }
 
+export class AddGoal implements Action {
+  readonly type = ProfileActionTypes.AddGoal;
+
+  constructor(public payload: GroupType) {}
+}
+
+export class RemoveGoal implements Action {
+  readonly type = ProfileActionTypes.RemoveGoal;
+
+  constructor(public payload: GroupType) {}
+}
+
 export type ProfileActionsUnion =
   | LoadGoals
   | LoadGoalsSuccess
@@ -78,4 +95,6 @@ export type ProfileActionsUnion =
   | UpdateGoalSuccess
   | UpdateGoalFail
   | DeleteGoal
-  | DeleteGoalSuccess;
+  | DeleteGoalSuccess
+  | AddGoal
+  | RemoveGoal;

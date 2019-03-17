@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import * as fromUser from './../../../../core/reducers';
 import * as fromProfile from './../../reducers/profile.reducer';
 import * as ProfileActions from '../../actions/profile.actions';
-import { IDefaultGoal } from '../../models';
+import { IDefaultGoal, IDefaultGroup } from '../../models';
 import { GroupType } from '../../../../enums';
 
 @Component({
@@ -16,9 +16,8 @@ export class ProfilePageComponent implements OnInit {
 
   user$ = this.store.pipe(select(fromUser.selectUsername));
   loading$ = this.store.pipe(select(fromProfile.selectLoading));
-  mindGoals$ = this.store.pipe(select(fromProfile.selectMindGoals));
-  bodyGoals$ = this.store.pipe(select(fromProfile.selectBodyGoals));
-  soulGoals$ = this.store.pipe(select(fromProfile.selectSoulGoals));
+  groups$ = this.store.pipe(select(fromProfile.selectGroups));
+  addGoal$ = this.store.pipe(select(fromProfile.selectAddGoal));
   error$ = this.store.pipe(select(fromProfile.selectError));
 
   constructor(
@@ -27,6 +26,10 @@ export class ProfilePageComponent implements OnInit {
 
   ngOnInit() {
     this.load();
+  }
+
+  trackByFn(index: number, item: IDefaultGroup) {
+    return item.type;
   }
 
   onUpdateGoal(goal: IDefaultGoal, type: GroupType) {
@@ -41,6 +44,14 @@ export class ProfilePageComponent implements OnInit {
       goal,
       groupType: type,
     }));
+  }
+
+  onAddGoal(type: GroupType) {
+    this.store.dispatch(new ProfileActions.AddGoal(type));
+  }
+
+  onRemoveGoal(type: GroupType) {
+    this.store.dispatch(new ProfileActions.RemoveGoal(type));
   }
 
   load() {

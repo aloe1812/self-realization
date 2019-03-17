@@ -15,6 +15,21 @@
         (updateGoal)="onUpdateGoal($event)"
         (deleteGoal)="onDeleteGoal($event)"
       ></app-goal>
+      <app-goal
+        *ngIf="showAddGoal"
+        [goal]="addGoalTemplate"
+        (updateGoal)="onUpdateGoal($event)"
+        (deleteGoal)="onRemoveGoal()"
+        isAdd
+      ></app-goal>
+      <div>
+        <button
+          class="add-goal-button"
+          mat-flat-button color="primary"
+          [disabled]="showAddGoal"
+          (click)="addGoalClick()"
+        >Add Goal</button>
+      </div>
     </div>
   </div>
 </article>

@@ -31,10 +31,15 @@ export class GroupComponent implements OnInit {
 
   @Input() goals: IDefaultGoal[];
   @Input() type: GroupType;
+  @Input() showAddGoal: boolean;
 
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
   @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
 
+  @Output() addGoal = new EventEmitter();
+  @Output() removeGoal = new EventEmitter();
+
+  addGoalTemplate = { title: '' };
   detailsState = 'show';
 
   get title() {
@@ -68,6 +73,14 @@ export class GroupComponent implements OnInit {
 
   onDeleteGoal($event: IDefaultGoal) {
     this.deleteGoal.next($event);
+  }
+
+  addGoalClick() {
+    this.addGoal.next();
+  }
+
+  onRemoveGoal() {
+    this.removeGoal.next();
   }
 
 }

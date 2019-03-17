@@ -9,25 +9,16 @@
   <ng-template #profileBlock>
     <app-about [user]="user$ | async"></app-about>
     <app-group
-      *ngIf="(mindGoals$ | async) as mindGoals"
-      type='mind'
-      [goals]="mindGoals"
-      (updateGoal)="onUpdateGoal($event, 'mind')"
-      (deleteGoal)="onDeleteGoal($event, 'mind')"
-    ></app-group>
-    <app-group
-      *ngIf="(bodyGoals$ | async) as bodyGoals"
-      type='body'
-      [goals]="bodyGoals"
-      (updateGoal)="onUpdateGoal($event, 'body')"
-      (deleteGoal)="onDeleteGoal($event, 'body')"
-    ></app-group>
-    <app-group
-      *ngIf="(soulGoals$ | async) as soulGoals"
-      type='soul'
-      [goals]="soulGoals"
-      (updateGoal)="onUpdateGoal($event, 'soul')"
-      (deleteGoal)="onDeleteGoal($event, 'soul')"
+      *ngFor="let group of groups$ | async; trackBy: trackByFn"
+      [type]="group.type"
+      [goals]="group.goals"
+      [showAddGoal]="(addGoal$ | async)[group.type]"
+
+      (addGoal)="onAddGoal(group.type)"
+      (removeGoal)="onRemoveGoal(group.type)"
+
+      (updateGoal)="onUpdateGoal($event, group.type)"
+      (deleteGoal)="onDeleteGoal($event, group.type)"
     ></app-group>
   </ng-template>
 </ng-template>
