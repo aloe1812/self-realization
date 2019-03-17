@@ -6,7 +6,7 @@
         cdkTextareaAutosize
         cdkAutosizeMinRows="1"
         placeholder="Goal title"
-        [ngModel]="goal.title"
+        [formControl]="titleCtrl"
         #message
         maxlength="500"
       ></textarea>
@@ -16,7 +16,7 @@
   </div>
   <div class="actions">
     <ng-container *ngIf="isEdit; else goalActions">
-      <button mat-icon-button color="primary" (click)="toggleEdit()">
+      <button class="has-loading" [class.is-loading]="isSaving" mat-icon-button color="primary" (click)="save()">
         <mat-icon>save</mat-icon>
       </button>
       <button mat-icon-button (click)="toggleEdit()">

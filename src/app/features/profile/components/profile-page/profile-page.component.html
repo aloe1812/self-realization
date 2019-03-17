@@ -1,10 +1,30 @@
 <div class="spinner default-spinner" *ngIf="loading$ | async; else whenLoaded"></div>
 <ng-template #whenLoaded>
-  <div *ngIf="error$ | async; else profileBlock">Error</div>
+  <div *ngIf="(error$ | async) as error; else profileBlock">
+    <div class="default-error-message">
+      <span>{{ error }}, try</span>
+      <button mat-flat-button color="primary" (click)="load()">Reload</button>
+    </div>
+  </div>
   <ng-template #profileBlock>
     <app-about [user]="user$ | async"></app-about>
-    <app-group *ngIf="(mind$ | async) as mind" [group]="mind"></app-group>
-    <app-group *ngIf="(body$ | async) as body" [group]="body"></app-group>
-    <app-group *ngIf="(soul$ | async) as soul" [group]="soul"></app-group>
+    <app-group
+      *ngIf="(mindGoals$ | async) as mindGoals"
+      type='mind'
+      [goals]="mindGoals"
+      (updateGoal)="onUpdateGoal($event, 'mind')"
+    ></app-group>
+    <app-group
+      *ngIf="(bodyGoals$ | async) as bodyGoals"
+      type='body'
+      [goals]="bodyGoals"
+      (updateGoal)="onUpdateGoal($event, 'body')"
+    ></app-group>
+    <app-group
+      *ngIf="(soulGoals$ | async) as soulGoals"
+      type='soul'
+      [goals]="soulGoals"
+      (updateGoal)="onUpdateGoal($event, 'soul')"
+    ></app-group>
   </ng-template>
 </ng-template>

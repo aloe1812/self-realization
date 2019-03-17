@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { IDefaultGoal } from '../../models';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-goal',
@@ -9,10 +10,14 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../core/comp
   styleUrls: ['./goal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GoalComponent implements OnInit {
+export class GoalComponent implements OnInit, OnChanges {
 
   @Input() goal: IDefaultGoal;
+  @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
 
+  titleCtrl: FormControl;
+
+  isSaving = false;
   isEdit = false;
 
   constructor(
@@ -20,10 +25,35 @@ export class GoalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.titleCtrl = new FormControl(this.goal.title);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.goal && !changes.goal.firstChange) {
+      this.setPristine();
+    }
   }
 
   toggleEdit() {
+    if (!this.titleCtrl) {
+      this.titleCtrl = new FormControl(this.goal.title);
+    }
+
     this.isEdit = !this.isEdit;
+  }
+
+  save() {
+    if (this.titleCtrl.value === this.goal.title) {
+      this.isEdit = false;
+      return;
+    }
+
+    this.isSaving = true;
+
+    this.updateGoal.next({
+      ...this.goal,
+      title: this.titleCtrl.value,
+    });
   }
 
   confirmDelete() {
@@ -40,6 +70,11 @@ export class GoalComponent implements OnInit {
           console.log('delete');
         }
       });
+  }
+
+  private setPristine() {
+    this.isEdit = false;
+    this.isSaving = false;
   }
 
 }

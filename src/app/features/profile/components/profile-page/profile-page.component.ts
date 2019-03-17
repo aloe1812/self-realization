@@ -3,6 +3,8 @@ import { Store, select } from '@ngrx/store';
 import * as fromUser from './../../../../core/reducers';
 import * as fromProfile from './../../reducers/profile.reducer';
 import * as ProfileActions from '../../actions/profile.actions';
+import { IDefaultGoal } from '../../models';
+import { GroupType } from '../../../../enums';
 
 @Component({
   selector: 'app-profile-page',
@@ -14,9 +16,9 @@ export class ProfilePageComponent implements OnInit {
 
   user$ = this.store.pipe(select(fromUser.selectUsername));
   loading$ = this.store.pipe(select(fromProfile.selectLoading));
-  mind$ = this.store.pipe(select(fromProfile.selectMind));
-  body$ = this.store.pipe(select(fromProfile.selectBody));
-  soul$ = this.store.pipe(select(fromProfile.selectSoul));
+  mindGoals$ = this.store.pipe(select(fromProfile.selectMindGoals));
+  bodyGoals$ = this.store.pipe(select(fromProfile.selectBodyGoals));
+  soulGoals$ = this.store.pipe(select(fromProfile.selectSoulGoals));
   error$ = this.store.pipe(select(fromProfile.selectError));
 
   constructor(
@@ -24,6 +26,17 @@ export class ProfilePageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.load();
+  }
+
+  onUpdateGoal(goal: IDefaultGoal, type: GroupType) {
+    this.store.dispatch(new ProfileActions.UpdateGoal({
+      goal,
+      groupType: type,
+    }));
+  }
+
+  load() {
     this.store.dispatch(new ProfileActions.LoadGoals());
   }
 

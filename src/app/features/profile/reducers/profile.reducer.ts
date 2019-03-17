@@ -1,21 +1,41 @@
 import { ProfileActionTypes, ProfileActionsUnion } from '../actions/profile.actions';
-import { IDefaultGroup } from '../models';
+import { IDefaultGoal } from '../models';
 import { GroupType } from '../../../enums';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { enumToArray } from '../../../utils/common';
+
+interface NormalizedGoals {
+  byId: {
+    [key: string]: IDefaultGoal;
+  };
+  allIds: string[];
+}
+
+const GroupTypes = enumToArray(GroupType);
+
+function goalsNormalizer(result: NormalizedGoals, goal: IDefaultGoal) {
+  result.byId[goal._id] = goal;
+  result.allIds.push(goal._id);
+  return result;
+}
 
 export interface State {
   loading: boolean;
-  [GroupType.Mind]: IDefaultGroup;
-  [GroupType.Body]: IDefaultGroup;
-  [GroupType.Soul]: IDefaultGroup;
+  groupsId: {
+    [key: string]: string;
+  };
+  mindGoals: NormalizedGoals;
+  bodyGoals: NormalizedGoals;
+  soulGoals: NormalizedGoals;
   error: string;
 }
 
 export const initialState: State = {
   loading: true,
-  [GroupType.Mind]: undefined,
-  [GroupType.Body]: undefined,
-  [GroupType.Soul]: undefined,
+  groupsId: undefined,
+  mindGoals: undefined,
+  bodyGoals: undefined,
+  soulGoals: undefined,
   error: undefined,
 };
 
@@ -28,27 +48,47 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
     }
 
     case ProfileActionTypes.LoadGoalsSuccess: {
-      const groupsHash = action.payload.reduce((hash, group) => {
-        hash[group.type] = group;
-        return hash;
-      }, {} as {[key: string]: IDefaultGroup});
+      const goals = {} as { [key: string]: NormalizedGoals };
+      const groupsId = {} as { [key: string]: string };
+
+      action.payload
+        .filter(g => GroupTypes.indexOf(g.type) !== -1)
+        .forEach(group => {
+          const goalsKey = `${group.type}Goals`;
+          groupsId[group.type] = group._id;
+          goals[goalsKey] = group.goals.reduce(goalsNormalizer, { byId: {}, allIds: [] } as NormalizedGoals);
+        });
 
       return {
         ...state,
         loading: false,
-        ...groupsHash,
         error: undefined,
+        groupsId,
+        ...goals,
       };
     }
 
     case ProfileActionTypes.LoadGoalsFail: {
       return {
-        ...state,
+        ...initialState,
         loading: false,
-        [GroupType.Mind]: undefined,
-        [GroupType.Body]: undefined,
-        [GroupType.Soul]: undefined,
-        error: 'Load goals error',
+        error: 'Something went wrong on loading profile',
+      };
+    }
+
+    case ProfileActionTypes.UpdatedGoal: {
+      const { groupType, goal } = action.payload;
+      const goalsKey = `${groupType}Goals`;
+
+      return {
+        ...state,
+        [goalsKey]: {
+          byId: {
+            ...state[goalsKey].byId,
+            [goal._id]: { ...goal },
+          },
+          allIds: [...state[goalsKey].allIds],
+        },
       };
     }
 
@@ -65,22 +105,27 @@ export const selectLoading = createSelector(
   (state: State) => state.loading,
 );
 
-export const selectMind = createSelector(
+export const selectMindGoals = createSelector(
   selectProfileState,
-  (state: State) => state[GroupType.Mind],
+  (state: State) => state.mindGoals.allIds.map(id => state.mindGoals.byId[id]),
 );
 
-export const selectBody = createSelector(
+export const selectBodyGoals = createSelector(
   selectProfileState,
-  (state: State) => state[GroupType.Body],
+  (state: State) => state.bodyGoals.allIds.map(id => state.bodyGoals.byId[id]),
 );
 
-export const selectSoul = createSelector(
+export const selectSoulGoals = createSelector(
   selectProfileState,
-  (state: State) => state[GroupType.Soul],
+  (state: State) => state.soulGoals.allIds.map(id => state.soulGoals.byId[id]),
 );
 
 export const selectError = createSelector(
   selectProfileState,
   (state: State) => state.error,
+);
+
+export const selectGroupsIds = createSelector(
+  selectProfileState,
+  (state: State) => state.groupsId,
 );

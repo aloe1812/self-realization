@@ -10,3 +10,9 @@ export interface IDefaultGoal {
   _id: string;
   title: string;
 }
+
+export interface UpdateGoalDto {
+  id: string;
+  title: string;
+  typeId: string;
+}

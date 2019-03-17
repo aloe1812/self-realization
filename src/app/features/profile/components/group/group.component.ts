@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { IDefaultGroup } from '../../models';
+import { IDefaultGoal } from '../../models';
 import { Groups } from '../../../../texts/texts';
+import { GroupType } from '../../../../enums';
 
 @Component({
   selector: 'app-group',
@@ -28,20 +29,23 @@ import { Groups } from '../../../../texts/texts';
 })
 export class GroupComponent implements OnInit {
 
-  @Input() group: IDefaultGroup;
+  @Input() goals: IDefaultGoal[];
+  @Input() type: GroupType;
+
+  @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
 
   detailsState = 'show';
 
   get title() {
-    return Groups[this.group.type].title;
+    return Groups[this.type].title;
   }
 
   get icon() {
-    return `assets/icons/${this.group.type}.svg`;
+    return `assets/icons/${this.type}.svg`;
   }
 
   get description() {
-    return Groups[this.group.type].description;
+    return Groups[this.type].description;
   }
 
   constructor() { }
@@ -51,6 +55,14 @@ export class GroupComponent implements OnInit {
 
   toggleDetails() {
     this.detailsState = this.detailsState === 'show' ? 'hide' : 'show';
+  }
+
+  trackByFn(index: number, item: IDefaultGoal) {
+    return item._id;
+  }
+
+  onUpdateGoal($event: IDefaultGoal) {
+    this.updateGoal.next($event);
   }
 
 }

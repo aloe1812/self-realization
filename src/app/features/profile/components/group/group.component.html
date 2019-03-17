@@ -1,4 +1,4 @@
-<article [ngClass]="group.type">
+<article [ngClass]="type">
   <mat-toolbar class="group-title">
     <img [src]="icon" alt="">
     <span>{{ title }}</span>
@@ -9,7 +9,11 @@
   <div class="main">
     <div class="details" [@dropdown]="detailsState">{{ description }}</div>
     <div class="goals">
-      <app-goal *ngFor="let goal of group.goals" [goal]="goal"></app-goal>
+      <app-goal
+        *ngFor="let goal of goals; trackBy: trackByFn"
+        [goal]="goal"
+        (updateGoal)="onUpdateGoal($event)"
+      ></app-goal>
     </div>
   </div>
 </article>
