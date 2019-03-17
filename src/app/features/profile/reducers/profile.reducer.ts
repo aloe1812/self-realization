@@ -76,7 +76,7 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
       };
     }
 
-    case ProfileActionTypes.UpdatedGoal: {
+    case ProfileActionTypes.UpdateGoalSuccess: {
       const { groupType, goal } = action.payload;
       const goalsKey = `${groupType}Goals`;
 
@@ -104,6 +104,21 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
             [goal._id]: { ...state[goalsKey].byId[goal._id] },
           },
           allIds: [...state[goalsKey].allIds],
+        },
+      };
+    }
+
+    case ProfileActionTypes.DeleteGoalSuccess: {
+      const { groupType, goal } = action.payload;
+      const goalsKey = `${groupType}Goals`;
+
+      const { [goal._id]: deleted, ...restById } = state[goalsKey].byId;
+
+      return {
+        ...state,
+        [goalsKey]: {
+          byId: restById,
+          allIds: (state[goalsKey] as NormalizedGoals).allIds.filter(id => id !== goal._id),
         },
       };
     }

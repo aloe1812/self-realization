@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { IDefaultGroup, UpdateGoalDto, IDefaultGoal } from '../models';
+import { IDefaultGroup, UpdateGoalDto, IDefaultGoal, DeleteGoalDto } from '../models';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -18,6 +18,10 @@ export class ProfileService {
 
   updateGoal(updateGoalDto: UpdateGoalDto): Observable<IDefaultGoal> {
     return this.http.post<IDefaultGoal>('/user/default-groups/goals', updateGoalDto);
+  }
+
+  deleteGoal(deleteGoalDto: DeleteGoalDto): Observable<any> {
+    return this.http.request('delete', '/user/default-groups/goals', { body: deleteGoalDto });
   }
 
 }

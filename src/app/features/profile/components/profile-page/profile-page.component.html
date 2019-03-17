@@ -13,18 +13,21 @@
       type='mind'
       [goals]="mindGoals"
       (updateGoal)="onUpdateGoal($event, 'mind')"
+      (deleteGoal)="onDeleteGoal($event, 'mind')"
     ></app-group>
     <app-group
       *ngIf="(bodyGoals$ | async) as bodyGoals"
       type='body'
       [goals]="bodyGoals"
       (updateGoal)="onUpdateGoal($event, 'body')"
+      (deleteGoal)="onDeleteGoal($event, 'body')"
     ></app-group>
     <app-group
       *ngIf="(soulGoals$ | async) as soulGoals"
       type='soul'
       [goals]="soulGoals"
       (updateGoal)="onUpdateGoal($event, 'soul')"
+      (deleteGoal)="onDeleteGoal($event, 'soul')"
     ></app-group>
   </ng-template>
 </ng-template>

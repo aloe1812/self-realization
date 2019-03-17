@@ -7,27 +7,45 @@
         cdkAutosizeMinRows="1"
         placeholder="Goal title"
         [formControl]="titleCtrl"
-        #message
         maxlength="500"
+        [readonly]="isSaving"
       ></textarea>
-      <mat-hint align="end">{{ message.value.length }} / 500</mat-hint>
+      <mat-hint align="end">{{ titleCtrl.value.length }} / 500</mat-hint>
     </mat-form-field>
     <ng-template #titleText><div class="title-text">{{ goal.title }}</div></ng-template>
   </div>
   <div class="actions">
     <ng-container *ngIf="isEdit; else goalActions">
-      <button class="has-loading" [class.is-loading]="isSaving" mat-icon-button color="primary" (click)="save()">
+      <button
+        class="has-loading"
+        [class.is-loading]="isSaving"
+        mat-icon-button
+        color="primary"
+        (click)="save()"
+        [disabled]="isSaving"
+      >
         <mat-icon>save</mat-icon>
       </button>
-      <button mat-icon-button (click)="toggleEdit()">
+      <button
+        mat-icon-button
+        (click)="toggleEdit()"
+        [disabled]="isSaving"
+      >
         <mat-icon>cancel</mat-icon>
       </button>
     </ng-container>
     <ng-template #goalActions>
-      <button mat-icon-button (click)="toggleEdit()">
+      <button mat-icon-button (click)="toggleEdit()" [disabled]="isDeleting">
         <mat-icon>edit</mat-icon>
       </button>
-      <button mat-icon-button color="warn" (click)="confirmDelete()">
+      <button
+        class="has-loading"
+        [class.is-loading]="isDeleting"
+        mat-icon-button
+        color="warn"
+        (click)="confirmDelete()"
+        [disabled]="isDeleting"
+      >
         <mat-icon>delete</mat-icon>
       </button>
     </ng-template>

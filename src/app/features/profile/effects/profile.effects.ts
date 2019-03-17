@@ -36,13 +36,33 @@ export class ProfileEffects {
         typeId: groupsIds[updateData.groupType],
       })
         .pipe(
-          map(goal => new ProfileActions.UpdatedGoal({
+          map(goal => new ProfileActions.UpdateGoalSuccess({
             goal,
             groupType: updateData.groupType,
           })),
-          catchError((error: HttpErrorResponse) => of(new ProfileActions.UpdateGoalFail({
+          catchError(() => of(new ProfileActions.UpdateGoalFail({
             goalData: updateData,
             message: 'Update failed!',
+          }))),
+        ),
+    ),
+  );
+
+  @Effect()
+  deleteGoal$ = this.actions$.pipe(
+    ofType<ProfileActions.DeleteGoal>(ProfileActionTypes.DeleteGoal),
+    map(action => action.payload),
+    withLatestFrom(this.store.select(fromProfile.selectGroupsIds)),
+    switchMap(([deleteData, groupsIds]) =>
+      this.profileService.deleteGoal({
+        id: deleteData.goal._id,
+        typeId: groupsIds[deleteData.groupType],
+      })
+        .pipe(
+          map(() => new ProfileActions.DeleteGoalSuccess(deleteData)),
+          catchError(() => of(new ProfileActions.UpdateGoalFail({
+            goalData: deleteData,
+            message: 'Delete failed!',
           }))),
         ),
     ),

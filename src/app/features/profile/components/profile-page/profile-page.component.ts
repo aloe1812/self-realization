@@ -36,6 +36,13 @@ export class ProfilePageComponent implements OnInit {
     }));
   }
 
+  onDeleteGoal(goal: IDefaultGoal, type: GroupType) {
+    this.store.dispatch(new ProfileActions.DeleteGoal({
+      goal,
+      groupType: type,
+    }));
+  }
+
   load() {
     this.store.dispatch(new ProfileActions.LoadGoals());
   }

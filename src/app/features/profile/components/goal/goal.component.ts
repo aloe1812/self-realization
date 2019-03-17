@@ -13,11 +13,14 @@ import { FormControl } from '@angular/forms';
 export class GoalComponent implements OnInit, OnChanges {
 
   @Input() goal: IDefaultGoal;
+
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
+  @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
 
   titleCtrl: FormControl;
 
   isSaving = false;
+  isDeleting = false;
   isEdit = false;
 
   constructor(
@@ -35,6 +38,7 @@ export class GoalComponent implements OnInit, OnChanges {
 
     if (changes.goal.currentValue.title === changes.goal.previousValue.title) { // same goal returned => update failed
       this.isSaving = false;
+      this.isDeleting = false;
     } else {
       this.setPristine();
     }
@@ -73,7 +77,8 @@ export class GoalComponent implements OnInit, OnChanges {
     dialogRef.afterClosed()
       .subscribe(res => {
         if (res === 'confirm') {
-          console.log('delete');
+          this.isDeleting = true;
+          this.deleteGoal.next(this.goal);
         }
       });
   }
@@ -81,6 +86,7 @@ export class GoalComponent implements OnInit, OnChanges {
   private setPristine() {
     this.isEdit = false;
     this.isSaving = false;
+    this.isDeleting = false;
   }
 
 }

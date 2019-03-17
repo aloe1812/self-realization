@@ -33,6 +33,7 @@ export class GroupComponent implements OnInit {
   @Input() type: GroupType;
 
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
+  @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
 
   detailsState = 'show';
 
@@ -63,6 +64,10 @@ export class GroupComponent implements OnInit {
 
   onUpdateGoal($event: IDefaultGoal) {
     this.updateGoal.next($event);
+  }
+
+  onDeleteGoal($event: IDefaultGoal) {
+    this.deleteGoal.next($event);
   }
 
 }

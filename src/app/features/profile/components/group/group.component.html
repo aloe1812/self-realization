@@ -13,6 +13,7 @@
         *ngFor="let goal of goals; trackBy: trackByFn"
         [goal]="goal"
         (updateGoal)="onUpdateGoal($event)"
+        (deleteGoal)="onDeleteGoal($event)"
       ></app-goal>
     </div>
   </div>

@@ -9,8 +9,11 @@ export enum ProfileActionTypes {
   LoadGoalsFail = '[Profile] Load Goals Fail',
 
   UpdateGoal = '[Profile] Update Goal',
-  UpdatedGoal = '[Profile] Updated Goal',
+  UpdateGoalSuccess = '[Profile] Update Goal Success',
   UpdateGoalFail = '[Profile] Updated Goal Fail',
+
+  DeleteGoal = '[Profile] Delete Goal',
+  DeleteGoalSuccess = '[Profile] Delete Goal Success',
 }
 
 export interface GoalPayload {
@@ -40,8 +43,8 @@ export class UpdateGoal implements Action {
   constructor(public payload: GoalPayload) {}
 }
 
-export class UpdatedGoal implements Action {
-  readonly type = ProfileActionTypes.UpdatedGoal;
+export class UpdateGoalSuccess implements Action {
+  readonly type = ProfileActionTypes.UpdateGoalSuccess;
 
   constructor(public payload: GoalPayload) {}
 }
@@ -55,4 +58,24 @@ export class UpdateGoalFail implements Action {
   }) {}
 }
 
-export type ProfileActionsUnion = LoadGoals | LoadGoalsSuccess | LoadGoalsFail | UpdateGoal | UpdatedGoal | UpdateGoalFail;
+export class DeleteGoal implements Action {
+  readonly type = ProfileActionTypes.DeleteGoal;
+
+  constructor(public payload: GoalPayload) {}
+}
+
+export class DeleteGoalSuccess implements Action {
+  readonly type = ProfileActionTypes.DeleteGoalSuccess;
+
+  constructor(public payload: GoalPayload) {}
+}
+
+export type ProfileActionsUnion =
+  | LoadGoals
+  | LoadGoalsSuccess
+  | LoadGoalsFail
+  | UpdateGoal
+  | UpdateGoalSuccess
+  | UpdateGoalFail
+  | DeleteGoal
+  | DeleteGoalSuccess;

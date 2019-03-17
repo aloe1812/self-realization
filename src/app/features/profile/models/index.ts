@@ -16,3 +16,8 @@ export interface UpdateGoalDto {
   title: string;
   typeId: string;
 }
+
+export interface DeleteGoalDto {
+  id: string;
+  typeId: string;
+}
