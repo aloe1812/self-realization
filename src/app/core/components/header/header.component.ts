@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { State, selectLoggedIn } from '../../reducers';
 import { MatDialog } from '@angular/material';
-import { ConfirmLogoutDialogComponent } from '../confirm-logout-dialog/confirm-logout-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
 import * as UserActions from '../../actions/user.actions';
 
 @Component({
@@ -23,13 +23,19 @@ export class HeaderComponent implements OnInit {
   ngOnInit() { }
 
   confirmLogout() {
-    const dialogRef = this.dialog.open(ConfirmLogoutDialogComponent);
-    dialogRef.afterClosed()
-    .subscribe(res => {
-      if (res === 'logout') {
-        this.store.dispatch(new UserActions.Logout());
-      }
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Are you sure you want to logout?',
+        confirmTitle: 'Logout',
+      } as ConfirmDialogData,
     });
+
+    dialogRef.afterClosed()
+      .subscribe(res => {
+        if (res === 'confirm') {
+          this.store.dispatch(new UserActions.Logout());
+        }
+      });
   }
 
 }

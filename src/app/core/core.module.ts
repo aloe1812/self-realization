@@ -12,11 +12,11 @@ import { UserService } from './services/user.service';
 import { InitService } from './services/init.service';
 import { HeaderComponent } from './components/header/header.component';
 import { MatToolbarModule, MatIconModule, MatButtonModule, MatDialogModule, MatTooltipModule } from '@angular/material';
-import { ConfirmLogoutDialogComponent } from './components/confirm-logout-dialog/confirm-logout-dialog.component';
 import { RouterModule } from '@angular/router';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
-  declarations: [HeaderComponent, ConfirmLogoutDialogComponent],
+  declarations: [HeaderComponent, ConfirmDialogComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -44,7 +44,7 @@ import { RouterModule } from '@angular/router';
       multi: true,
     },
   ],
-  entryComponents: [ConfirmLogoutDialogComponent],
+  entryComponents: [ConfirmDialogComponent],
   exports: [HeaderComponent],
 })
 export class CoreModule { }

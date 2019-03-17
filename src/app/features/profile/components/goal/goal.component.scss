@@ -2,3 +2,36 @@
   display: block;
   margin: 10px 0;
 }
+
+.goal {
+  display: flex;
+  align-items: center;
+  background: #EBEBEB;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.title {
+  flex: 1 1 auto;
+  padding: 0.25em 0;
+}
+
+.title-text {
+  padding: .2em 0
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  flex: 0 0 auto;
+  margin-left: 15px;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+.mat-form-field-infix {
+  border-top: none;
+}

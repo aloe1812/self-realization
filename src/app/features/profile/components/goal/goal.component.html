@@ -1,1 +1,35 @@
-<mat-toolbar>{{ goal.title }}</mat-toolbar>
+<div class="goal">
+  <div class="title">
+    <mat-form-field floatLabel="never" class="goal-input" *ngIf="isEdit; else titleText">
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="1"
+        placeholder="Goal title"
+        [ngModel]="goal.title"
+        #message
+        maxlength="500"
+      ></textarea>
+      <mat-hint align="end">{{ message.value.length }} / 500</mat-hint>
+    </mat-form-field>
+    <ng-template #titleText><div class="title-text">{{ goal.title }}</div></ng-template>
+  </div>
+  <div class="actions">
+    <ng-container *ngIf="isEdit; else goalActions">
+      <button mat-icon-button color="primary" (click)="toggleEdit()">
+        <mat-icon>save</mat-icon>
+      </button>
+      <button mat-icon-button (click)="toggleEdit()">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </ng-container>
+    <ng-template #goalActions>
+      <button mat-icon-button (click)="toggleEdit()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="confirmDelete()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </div>
+</div>

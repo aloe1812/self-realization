@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
+import * as fromUser from './../../../../core/reducers';
 import * as fromProfile from './../../reducers/profile.reducer';
 import * as ProfileActions from '../../actions/profile.actions';
 
@@ -11,6 +12,7 @@ import * as ProfileActions from '../../actions/profile.actions';
 })
 export class ProfilePageComponent implements OnInit {
 
+  user$ = this.store.pipe(select(fromUser.selectUsername));
   loading$ = this.store.pipe(select(fromProfile.selectLoading));
   mind$ = this.store.pipe(select(fromProfile.selectMind));
   body$ = this.store.pipe(select(fromProfile.selectBody));
@@ -18,7 +20,7 @@ export class ProfilePageComponent implements OnInit {
   error$ = this.store.pipe(select(fromProfile.selectError));
 
   constructor(
-    private store: Store<fromProfile.State>,
+    private store: Store<fromUser.State>,
   ) { }
 
   ngOnInit() {

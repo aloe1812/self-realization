@@ -1,7 +1,10 @@
 <div class="spinner default-spinner" *ngIf="loading$ | async; else whenLoaded"></div>
 <ng-template #whenLoaded>
-  <div *ngIf="error$ | async">Error</div>
-  <app-group *ngIf="(mind$ | async) as mind" [group]="mind"></app-group>
-  <app-group *ngIf="(body$ | async) as body" [group]="body"></app-group>
-  <app-group *ngIf="(soul$ | async) as soul" [group]="soul"></app-group>
+  <div *ngIf="error$ | async; else profileBlock">Error</div>
+  <ng-template #profileBlock>
+    <app-about [user]="user$ | async"></app-about>
+    <app-group *ngIf="(mind$ | async) as mind" [group]="mind"></app-group>
+    <app-group *ngIf="(body$ | async) as body" [group]="body"></app-group>
+    <app-group *ngIf="(soul$ | async) as soul" [group]="soul"></app-group>
+  </ng-template>
 </ng-template>
