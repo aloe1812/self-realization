@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfilePageComponent } from './components/profile-page/profile-page.component';
 import { ProfileRoutingModule } from './profile-routing.module';
-import { MatToolbarModule, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSnackBarModule } from '@angular/material';
+import { MatToolbarModule, MatIconModule, MatButtonModule,
+         MatFormFieldModule, MatInputModule, MatSnackBarModule, MatCardModule } from '@angular/material';
 import { GroupComponent } from './components/group/group.component';
 import { GoalComponent } from './components/goal/goal.component';
 import { StoreModule } from '@ngrx/store';
@@ -24,6 +25,7 @@ import { SharedModule } from '../../shared/shared.module';
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
+    MatCardModule,
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
