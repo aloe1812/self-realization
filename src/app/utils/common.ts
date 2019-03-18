@@ -12,3 +12,7 @@ export function extractErrorMessage(error: HttpErrorResponse): string {
 
   return 'Unknown error';
 }
+
+export function enumToArray(enumObject: object): string[] {
+  return Object.keys(enumObject).map(key => enumObject[key]);
+}

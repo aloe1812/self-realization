@@ -1,0 +1,53 @@
+<div class="goal">
+  <div class="title">
+    <mat-form-field floatLabel="never" class="goal-input" *ngIf="isEdit; else titleText">
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="1"
+        placeholder="Goal title"
+        [formControl]="titleCtrl"
+        maxlength="500"
+        [readonly]="goal.isSaving"
+      ></textarea>
+      <mat-hint align="end">{{ titleCtrl.value.length }} / 500</mat-hint>
+    </mat-form-field>
+    <ng-template #titleText><div class="title-text">{{ goal.title }}</div></ng-template>
+  </div>
+  <div class="actions">
+    <ng-container *ngIf="isEdit; else goalActions">
+      <button
+        class="has-loading"
+        [class.is-loading]="goal.isSaving"
+        mat-icon-button
+        color="primary"
+        (click)="save()"
+        [disabled]="goal.isSaving || !titleCtrl.value"
+      >
+        <mat-icon>save</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        (click)="toggleEdit()"
+        [disabled]="goal.isSaving"
+      >
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </ng-container>
+    <ng-template #goalActions>
+      <button mat-icon-button (click)="toggleEdit()" [disabled]="goal.isDeleting">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        class="has-loading"
+        [class.is-loading]="goal.isDeleting"
+        mat-icon-button
+        color="warn"
+        (click)="confirmDelete()"
+        [disabled]="goal.isDeleting"
+      >
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </div>
+</div>

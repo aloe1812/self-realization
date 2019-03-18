@@ -21,3 +21,16 @@ button[disabled], .mat-stroked-button[disabled] {
 .login-page {
   background-color: #fafafa;
 }
+
+.header-tooltip {
+  position: relative;
+  top: -10px;
+}
+
+.default-error-message {
+  text-align: center;
+  color: rgb(244, 67, 54);
+  button {
+    margin-left: 10px;
+  }
+}

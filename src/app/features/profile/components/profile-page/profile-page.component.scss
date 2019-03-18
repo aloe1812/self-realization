@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  padding: 40px;
+}
+
+app-group:not(:last-child) {
+  display: block;
+  margin-bottom: 50px;
+}

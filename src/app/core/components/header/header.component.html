@@ -1,0 +1,19 @@
+<mat-toolbar color="primary" class="mat-elevation-z3">
+  <mat-toolbar-row>
+    <div>Welcome to Self Realization!</div>
+    <div class="actions" *ngIf="loggedIn$ | async">
+      <a mat-icon-button matTooltip="Goals" matTooltipClass="header-tooltip" routerLink="/day" routerLinkActive="active">
+        <mat-icon>stars</mat-icon>
+      </a>
+      <button mat-icon-button matTooltip="Statistics" matTooltipClass="header-tooltip">
+        <mat-icon>show_chart</mat-icon>
+      </button>
+      <a mat-icon-button matTooltip="Profile" matTooltipClass="header-tooltip" routerLink="/profile" routerLinkActive="active">
+        <mat-icon>person</mat-icon>
+      </a>
+      <button mat-icon-button matTooltip="Logout" matTooltipClass="header-tooltip" (click)="confirmLogout()">
+        <mat-icon>exit_to_app</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

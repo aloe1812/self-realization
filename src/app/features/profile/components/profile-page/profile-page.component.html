@@ -1,3 +1,27 @@
-<p>
-  profile-page works!
-</p>
+<div class="spinner default-spinner" *ngIf="loading$ | async; else whenLoaded"></div>
+<ng-template #whenLoaded>
+  <div *ngIf="(error$ | async) as error; else profileBlock">
+    <div class="default-error-message">
+      <span>{{ error }}, try</span>
+      <button mat-flat-button color="primary" (click)="load()">Reload</button>
+    </div>
+  </div>
+  <ng-template #profileBlock>
+    <app-about [user]="user$ | async"></app-about>
+    <ng-container *ngIf="(newGoal$ | async) as newGoal">
+      <app-group
+        *ngFor="let group of groups$ | async; trackBy: trackByFn"
+        [type]="group.type"
+        [goals]="group.goals"
+        [newGoal]="newGoal[group.type]"
+
+        (addGoal)="onAddGoal(group.type)"
+        (removeGoal)="onRemoveGoal(group.type)"
+
+        (createGoal)="onCreateGoal($event, group.type)"
+
+        (updateGoal)="onUpdateGoal($event, group.type)"
+        (deleteGoal)="onDeleteGoal($event, group.type)"
+      ></app-group>
+    </ng-container>
+</ng-template>

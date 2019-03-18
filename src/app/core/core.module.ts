@@ -10,9 +10,13 @@ import { environment } from '../../environments/environment';
 import { httpInterceptorProviders } from './interceptors';
 import { UserService } from './services/user.service';
 import { InitService } from './services/init.service';
+import { HeaderComponent } from './components/header/header.component';
+import { MatToolbarModule, MatIconModule, MatButtonModule, MatDialogModule, MatTooltipModule } from '@angular/material';
+import { RouterModule } from '@angular/router';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [HeaderComponent, ConfirmDialogComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -22,6 +26,12 @@ import { InitService } from './services/init.service';
       maxAge: 25,
       logOnly: environment.production,
     }),
+    RouterModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatTooltipModule,
   ],
   providers: [
     httpInterceptorProviders,
@@ -34,5 +44,7 @@ import { InitService } from './services/init.service';
       multi: true,
     },
   ],
+  entryComponents: [ConfirmDialogComponent],
+  exports: [HeaderComponent],
 })
 export class CoreModule { }
