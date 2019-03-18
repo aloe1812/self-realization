@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import * as fromUser from './../../../../core/reducers';
 import * as fromProfile from './../../reducers/profile.reducer';
 import * as ProfileActions from '../../actions/profile.actions';
-import { IDefaultGoal, IDefaultGroup } from '../../models';
+import { IDefaultGoal, IDefaultGroup, IAddDefaultGoal } from '../../models';
 import { GroupType } from '../../../../enums';
 
 @Component({
@@ -46,7 +46,14 @@ export class ProfilePageComponent implements OnInit {
     }));
   }
 
-  onAddGoal(type: GroupType) {
+  onCreateGoal(goal: IAddDefaultGoal, type: GroupType) {
+    this.store.dispatch(new ProfileActions.CreateGoal({
+      goal,
+      groupType: type,
+    }));
+  }
+
+  onAddedGoal(type: GroupType) {
     this.store.dispatch(new ProfileActions.AddGoal(type));
   }
 

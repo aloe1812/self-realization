@@ -11,6 +11,10 @@ interface NormalizedGoals {
   allIds: string[];
 }
 
+export interface AddGoal {
+  isSaving: boolean;
+}
+
 const GroupTypes = enumToArray(GroupType);
 
 function goalsNormalizer(result: NormalizedGoals, goal: IDefaultGoal) {
@@ -31,7 +35,7 @@ export interface State {
   };
 
   addGoal: {
-    [key: string]: boolean;
+    [key: string]: AddGoal | undefined;
   };
 
   error: string;
@@ -58,14 +62,14 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
     case ProfileActionTypes.LoadGoalsSuccess: {
       const goals = {} as { [key: string]: NormalizedGoals };
       const groupsId = {} as { [key: string]: string };
-      const addGoal = {} as { [key: string]: boolean };
+      const addGoal = {} as { [key: string]: AddGoal };
 
       action.payload
         .filter(g => GroupTypes.indexOf(g.type) !== -1)
         .forEach(group => {
           groupsId[group.type] = group._id;
           goals[group.type] = group.goals.reduce(goalsNormalizer, { byId: {}, allIds: [] } as NormalizedGoals);
-          addGoal[group.type] = false;
+          addGoal[group.type] = undefined;
         });
 
       return {
@@ -151,7 +155,7 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
         ...state,
         addGoal: {
           ...state.addGoal,
-          [type]: true,
+          [type]: { isSaving: false },
         },
       };
     }
@@ -163,7 +167,54 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
         ...state,
         addGoal: {
           ...state.addGoal,
-          [type]: false,
+          [type]: undefined,
+        },
+      };
+    }
+
+    case ProfileActionTypes.CreateGoal: {
+      const { groupType } = action.payload;
+
+      return {
+        ...state,
+        addGoal: {
+          ...state.addGoal,
+          [groupType]: { isSaving: true },
+        },
+      };
+    }
+
+    case ProfileActionTypes.CreateGoalSuccess: {
+      const { groupType, goal } = action.payload;
+      const groupGoals = state.goals[groupType];
+
+      return {
+        ...state,
+        goals: {
+          ...state.goals,
+          [groupType]: {
+            byId: {
+              ...groupGoals.byId,
+              [goal._id]: goal,
+            },
+            allIds: [...groupGoals.allIds, goal._id],
+          },
+        },
+        addGoal: {
+          ...state.addGoal,
+          [groupType]: undefined,
+        },
+      };
+    }
+
+    case ProfileActionTypes.CreateGoalFail: {
+      const type = action.payload;
+
+      return {
+        ...state,
+        addGoal: {
+          ...state.addGoal,
+          [type]: { isSaving: false },
         },
       };
     }
@@ -188,12 +239,10 @@ export const selectGroups = createSelector(
       return undefined;
     }
 
-    const sort = enumToArray(GroupType);
-
     return Object.keys(state.goals)
       .sort((a: GroupType, b: GroupType) => {
-        const indexA = sort.indexOf(a);
-        const indexB = sort.indexOf(b);
+        const indexA = GroupTypes.indexOf(a);
+        const indexB = GroupTypes.indexOf(b);
         return indexA - indexB;
       })
       .map(type => {

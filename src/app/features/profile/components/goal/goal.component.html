@@ -22,7 +22,7 @@
         mat-icon-button
         color="primary"
         (click)="save()"
-        [disabled]="isSaving"
+        [disabled]="isSaving || !titleCtrl.value"
       >
         <mat-icon>save</mat-icon>
       </button>

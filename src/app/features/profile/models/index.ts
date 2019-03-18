@@ -11,6 +11,15 @@ export interface IDefaultGoal {
   title: string;
 }
 
+export interface IAddDefaultGoal {
+  title: string;
+}
+
+export interface CreateGoalDto {
+  title: string;
+  typeId: string;
+}
+
 export interface UpdateGoalDto {
   id: string;
   title: string;

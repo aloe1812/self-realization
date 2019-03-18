@@ -2,7 +2,8 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleCha
 import { IDefaultGoal } from '../../models';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { AddGoal } from '../../reducers/profile.reducer';
 
 @Component({
   selector: 'app-goal',
@@ -13,30 +14,30 @@ import { FormControl } from '@angular/forms';
 export class GoalComponent implements OnInit, OnChanges {
 
   @Input() goal: IDefaultGoal;
-  @Input('isAdd')
-  set isAdd(value: boolean) {
-    if (typeof value === 'boolean') {
-      this._isAdd = value;
-    } else {
-      this._isAdd = value !== undefined;
-    }
-  }
-
-  get isAdd() {
-    return this._isAdd;
-  }
+  @Input() addGoal: AddGoal; // it's ad add goal component, if this is not empty
 
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
   @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
 
   titleCtrl: FormControl;
 
-  isSaving = false;
   isDeleting = false;
   isEdit = false;
 
   // tslint:disable-next-line: variable-name
-  private _isAdd = false;
+  private _isSaving = false;
+
+  get isAdd() {
+    return !!this.addGoal;
+  }
+
+  get isSaving() {
+    return this._isSaving || (this.addGoal && this.addGoal.isSaving);
+  }
+
+  set isSaving(value: boolean) {
+    this._isSaving = value;
+  }
 
   constructor(
     private dialog: MatDialog,
@@ -46,7 +47,8 @@ export class GoalComponent implements OnInit, OnChanges {
     if (this.isAdd) {
       this.isEdit = true;
     }
-    this.titleCtrl = new FormControl(this.goal.title);
+
+    this.titleCtrl = new FormControl(this.goal.title, Validators.required);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -55,8 +57,8 @@ export class GoalComponent implements OnInit, OnChanges {
     }
 
     if (changes.goal.currentValue.title === changes.goal.previousValue.title) { // same goal returned => update failed
-      this.isSaving = false;
       this.isDeleting = false;
+      this.isSaving = false;
     } else {
       this.setPristine();
     }
@@ -76,12 +78,18 @@ export class GoalComponent implements OnInit, OnChanges {
   }
 
   save() {
-    if (this.titleCtrl.value === this.goal.title) {
-      this.isEdit = false;
+    if (this.titleCtrl.invalid) {
       return;
     }
 
-    this.isSaving = true;
+    if (!this.isAdd) {
+      if (this.titleCtrl.value === this.goal.title) {
+        this.isEdit = false;
+        return;
+      }
+
+      this.isSaving = true;
+    }
 
     this.updateGoal.next({
       ...this.goal,

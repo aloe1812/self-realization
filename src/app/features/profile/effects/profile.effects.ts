@@ -25,6 +25,26 @@ export class ProfileEffects {
   );
 
   @Effect()
+  createGoal$ = this.actions$.pipe(
+    ofType<ProfileActions.CreateGoal>(ProfileActionTypes.CreateGoal),
+    map(action => action.payload),
+    withLatestFrom(this.store.select(fromProfile.selectGroupsIds)),
+    switchMap(([createData, groupsIds]) =>
+      this.profileService.createGoal({
+        ...createData.goal,
+        typeId: groupsIds[createData.groupType],
+      })
+        .pipe(
+          map(goal => new ProfileActions.CreateGoalSuccess({
+            goal,
+            groupType: createData.groupType,
+          })),
+          catchError(() => of(new ProfileActions.CreateGoalFail(createData.groupType))),
+        ),
+    ),
+  );
+
+  @Effect()
   updateGoal$ = this.actions$.pipe(
     ofType<ProfileActions.UpdateGoal>(ProfileActionTypes.UpdateGoal),
     map(action => action.payload),
@@ -73,6 +93,12 @@ export class ProfileEffects {
     ofType<ProfileActions.UpdateGoalFail>(ProfileActionTypes.UpdateGoalFail),
     map(action => action.payload.message),
     tap(message => this.snackBar.open(message, 'Got it', { duration: 2000 })),
+  );
+
+  @Effect({ dispatch: false })
+  createGoalFail$ = this.actions$.pipe(
+    ofType<ProfileActions.CreateGoalFail>(ProfileActionTypes.CreateGoalFail),
+    tap(() => this.snackBar.open('Creating new goal failed', 'Got it', { duration: 2000 })),
   );
 
   constructor(

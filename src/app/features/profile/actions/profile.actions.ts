@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
-import { IDefaultGroup, IDefaultGoal } from '../models';
+import { IDefaultGroup, IDefaultGoal, IAddDefaultGoal } from '../models';
 import { GroupType } from '../../../enums';
 
 export enum ProfileActionTypes {
@@ -17,12 +17,19 @@ export enum ProfileActionTypes {
 
   AddGoal = '[Profile] Add Goal',
   RemoveGoal = '[Profile] Remove Goal',
-  SaveGoal = '[Profile] Save Goal',
-  SaveGoalSuccess = '[Profile] Save Goal Success',
+
+  CreateGoal = '[Profile] Create Goal',
+  CreateGoalSuccess = '[Profile] Create Goal Success',
+  CreateGoalFail = '[Profile] Create Goal Fail',
 }
 
 export interface GoalPayload {
   goal: IDefaultGoal;
+  groupType: GroupType;
+}
+
+export interface CreateGoalPayload {
+  goal: IAddDefaultGoal;
   groupType: GroupType;
 }
 
@@ -87,6 +94,24 @@ export class RemoveGoal implements Action {
   constructor(public payload: GroupType) {}
 }
 
+export class CreateGoal implements Action {
+  readonly type = ProfileActionTypes.CreateGoal;
+
+  constructor(public payload: CreateGoalPayload) {}
+}
+
+export class CreateGoalSuccess implements Action {
+  readonly type = ProfileActionTypes.CreateGoalSuccess;
+
+  constructor(public payload: GoalPayload) {}
+}
+
+export class CreateGoalFail implements Action {
+  readonly type = ProfileActionTypes.CreateGoalFail;
+
+  constructor(public payload: GroupType) {}
+}
+
 export type ProfileActionsUnion =
   | LoadGoals
   | LoadGoalsSuccess
@@ -97,4 +122,7 @@ export type ProfileActionsUnion =
   | DeleteGoal
   | DeleteGoalSuccess
   | AddGoal
-  | RemoveGoal;
+  | RemoveGoal
+  | CreateGoal
+  | CreateGoalSuccess
+  | CreateGoalFail;
