@@ -25,6 +25,17 @@ import { GroupType } from '../../../../enums';
         })),
       transition('* => *', animate('200ms ease')),
     ]),
+    trigger('toggle', [
+      state('hide',
+        style({
+          transform: 'rotate(180deg)',
+        })),
+      state('show, void',
+        style({
+          transform: 'rotate(0)',
+        })),
+      transition('* => *', animate('200ms ease')),
+    ]),
   ],
 })
 export class GroupComponent implements OnInit {
