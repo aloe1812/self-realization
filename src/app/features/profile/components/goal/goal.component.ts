@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges,
          SimpleChanges, Output, EventEmitter, SimpleChange } from '@angular/core';
-import { IDefaultGoal, AddGoalStatus } from '../../models';
+import { IDefaultGoal } from '../../models';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
 import { FormControl, Validators } from '@angular/forms';

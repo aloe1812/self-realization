@@ -26,7 +26,3 @@ export interface NormalizedGoals {
   };
   allIds: string[];
 }
-
-export interface AddGoalStatus {
-  isSaving: boolean;
-}

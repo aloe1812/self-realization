@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { IDefaultGoal, INewDefaultGoal } from '../../models';
-import { Groups } from '../../../../texts/texts';
+import GroupText from '../../../../texts/groups.json';
 import { GroupType } from '../../../../enums';
 
 @Component({
@@ -54,7 +54,7 @@ export class GroupComponent implements OnInit {
   detailsState = 'show';
 
   get title() {
-    return Groups[this.type].title; // move get title by type to service
+    return GroupText[this.type].title; // move get title by type to service
   }
 
   get icon() {
@@ -62,7 +62,7 @@ export class GroupComponent implements OnInit {
   }
 
   get description() {
-    return Groups[this.type].description;
+    return GroupText[this.type].description;
   }
 
   constructor() { }

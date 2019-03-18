@@ -4,7 +4,7 @@
   </mat-card-header>
   <mat-card-content>
     <div class="error" *ngIf="error">{{ error }}</div>
-    <form [formGroup]="form" (submit)="onSubmit($event)">
+    <form [formGroup]="form" (submit)="onSubmit()">
       <mat-form-field [class.mat-form-field-invalid]="!error">
         <input matInput placeholder="Username" formControlName="username">
         <mat-icon matSuffix>account_box</mat-icon>
