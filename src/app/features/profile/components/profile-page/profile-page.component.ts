@@ -3,7 +3,7 @@ import { Store, select } from '@ngrx/store';
 import * as fromUser from './../../../../core/reducers';
 import * as fromProfile from './../../reducers/profile.reducer';
 import * as ProfileActions from '../../actions/profile.actions';
-import { IDefaultGoal, IDefaultGroup, IAddDefaultGoal } from '../../models';
+import { IDefaultGoal, IDefaultGroup, IDefaultGoalTemplate } from '../../models';
 import { GroupType } from '../../../../enums';
 
 @Component({
@@ -17,7 +17,7 @@ export class ProfilePageComponent implements OnInit {
   user$ = this.store.pipe(select(fromUser.selectUsername));
   loading$ = this.store.pipe(select(fromProfile.selectLoading));
   groups$ = this.store.pipe(select(fromProfile.selectGroups));
-  addGoal$ = this.store.pipe(select(fromProfile.selectAddGoal));
+  addGoalStatus$ = this.store.pipe(select(fromProfile.selectAddGoalStatus));
   error$ = this.store.pipe(select(fromProfile.selectError));
 
   constructor(
@@ -46,14 +46,14 @@ export class ProfilePageComponent implements OnInit {
     }));
   }
 
-  onCreateGoal(goal: IAddDefaultGoal, type: GroupType) {
+  onCreateGoal(goal: IDefaultGoalTemplate, type: GroupType) {
     this.store.dispatch(new ProfileActions.CreateGoal({
       goal,
       groupType: type,
     }));
   }
 
-  onAddedGoal(type: GroupType) {
+  onAddGoal(type: GroupType) {
     this.store.dispatch(new ProfileActions.AddGoal(type));
   }
 

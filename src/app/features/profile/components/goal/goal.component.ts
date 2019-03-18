@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { IDefaultGoal } from '../../models';
+import { IDefaultGoal, AddGoalStatus } from '../../models';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
 import { FormControl, Validators } from '@angular/forms';
-import { AddGoal } from '../../reducers/profile.reducer';
 
 @Component({
   selector: 'app-goal',
@@ -14,7 +13,7 @@ import { AddGoal } from '../../reducers/profile.reducer';
 export class GoalComponent implements OnInit, OnChanges {
 
   @Input() goal: IDefaultGoal;
-  @Input() addGoal: AddGoal; // it's ad add goal component, if this is not empty
+  @Input() addGoalStatus: AddGoalStatus; // this component is an add goal component, if this input is not empty
 
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
   @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
@@ -28,11 +27,11 @@ export class GoalComponent implements OnInit, OnChanges {
   private _isSaving = false;
 
   get isAdd() {
-    return !!this.addGoal;
+    return !!this.addGoalStatus;
   }
 
   get isSaving() {
-    return this._isSaving || (this.addGoal && this.addGoal.isSaving);
+    return this._isSaving || (this.addGoalStatus && this.addGoalStatus.isSaving);
   }
 
   set isSaving(value: boolean) {

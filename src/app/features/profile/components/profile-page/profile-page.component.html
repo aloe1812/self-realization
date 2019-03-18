@@ -12,9 +12,9 @@
       *ngFor="let group of groups$ | async; trackBy: trackByFn"
       [type]="group.type"
       [goals]="group.goals"
-      [addGoal]="(addGoal$ | async)[group.type]"
+      [addGoalStatus]="(addGoalStatus$ | async)[group.type]"
 
-      (addedGoal)="onAddedGoal(group.type)"
+      (addGoal)="onAddGoal(group.type)"
       (removeGoal)="onRemoveGoal(group.type)"
 
       (createGoal)="onCreateGoal($event, group.type)"

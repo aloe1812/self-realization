@@ -1,19 +1,8 @@
 import { ProfileActionTypes, ProfileActionsUnion } from '../actions/profile.actions';
-import { IDefaultGoal } from '../models';
+import { IDefaultGoal, NormalizedGoals, AddGoalStatus } from '../models';
 import { GroupType } from '../../../enums';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { enumToArray } from '../../../utils/common';
-
-interface NormalizedGoals {
-  byId: {
-    [key: string]: IDefaultGoal;
-  };
-  allIds: string[];
-}
-
-export interface AddGoal {
-  isSaving: boolean;
-}
 
 const GroupTypes = enumToArray(GroupType);
 
@@ -34,8 +23,8 @@ export interface State {
     [key: string]: NormalizedGoals;
   };
 
-  addGoal: {
-    [key: string]: AddGoal | undefined;
+  addGoalStatus: {
+    [key: string]: AddGoalStatus;
   };
 
   error: string;
@@ -46,7 +35,7 @@ export const initialState: State = {
 
   groupsId: undefined,
   goals: undefined,
-  addGoal: undefined,
+  addGoalStatus: undefined,
 
   error: undefined,
 };
@@ -62,14 +51,14 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
     case ProfileActionTypes.LoadGoalsSuccess: {
       const goals = {} as { [key: string]: NormalizedGoals };
       const groupsId = {} as { [key: string]: string };
-      const addGoal = {} as { [key: string]: AddGoal };
+      const addGoalStatus = {} as { [key: string]: AddGoalStatus };
 
       action.payload
         .filter(g => GroupTypes.indexOf(g.type) !== -1)
         .forEach(group => {
           groupsId[group.type] = group._id;
           goals[group.type] = group.goals.reduce(goalsNormalizer, { byId: {}, allIds: [] } as NormalizedGoals);
-          addGoal[group.type] = undefined;
+          addGoalStatus[group.type] = undefined;
         });
 
       return {
@@ -78,7 +67,7 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
         error: undefined,
         groupsId,
         goals,
-        addGoal,
+        addGoalStatus,
       };
     }
 
@@ -153,8 +142,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoal: {
-          ...state.addGoal,
+        addGoalStatus: {
+          ...state.addGoalStatus,
           [type]: { isSaving: false },
         },
       };
@@ -165,8 +154,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoal: {
-          ...state.addGoal,
+        addGoalStatus: {
+          ...state.addGoalStatus,
           [type]: undefined,
         },
       };
@@ -177,8 +166,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoal: {
-          ...state.addGoal,
+        addGoalStatus: {
+          ...state.addGoalStatus,
           [groupType]: { isSaving: true },
         },
       };
@@ -200,8 +189,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
             allIds: [...groupGoals.allIds, goal._id],
           },
         },
-        addGoal: {
-          ...state.addGoal,
+        addGoalStatus: {
+          ...state.addGoalStatus,
           [groupType]: undefined,
         },
       };
@@ -212,8 +201,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoal: {
-          ...state.addGoal,
+        addGoalStatus: {
+          ...state.addGoalStatus,
           [type]: { isSaving: false },
         },
       };
@@ -261,9 +250,9 @@ export const selectGroupsIds = createSelector(
   (state: State) => state.groupsId,
 );
 
-export const selectAddGoal = createSelector(
+export const selectAddGoalStatus = createSelector(
   selectProfileState,
-  (state: State) => state.addGoal,
+  (state: State) => state.addGoalStatus,
 );
 
 export const selectError = createSelector(

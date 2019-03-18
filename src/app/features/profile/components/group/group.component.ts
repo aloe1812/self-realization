@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { IDefaultGoal, IAddDefaultGoal } from '../../models';
+import { IDefaultGoal, IDefaultGoalTemplate, AddGoalStatus } from '../../models';
 import { Groups } from '../../../../texts/texts';
 import { GroupType } from '../../../../enums';
-import { AddGoal } from '../../actions/profile.actions';
 
 @Component({
   selector: 'app-group',
@@ -32,13 +31,13 @@ export class GroupComponent implements OnInit {
 
   @Input() goals: IDefaultGoal[];
   @Input() type: GroupType;
-  @Input() addGoal: AddGoal;
+  @Input() addGoalStatus: AddGoalStatus;
 
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
   @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
-  @Output() createGoal: EventEmitter<IAddDefaultGoal> = new EventEmitter();
+  @Output() createGoal: EventEmitter<IDefaultGoalTemplate> = new EventEmitter();
 
-  @Output() addedGoal = new EventEmitter();
+  @Output() addGoal = new EventEmitter();
   @Output() removeGoal = new EventEmitter();
 
   addGoalTemplate = { title: '' };
@@ -77,12 +76,12 @@ export class GroupComponent implements OnInit {
     this.deleteGoal.next($event);
   }
 
-  onCreateGoal($event: IAddDefaultGoal) {
+  onCreateGoal($event: IDefaultGoalTemplate) {
     this.createGoal.next($event);
   }
 
-  onAddGoal() {
-    this.addedGoal.next();
+  triggerAddGoal() {
+    this.addGoal.next();
   }
 
   onRemoveGoal() {

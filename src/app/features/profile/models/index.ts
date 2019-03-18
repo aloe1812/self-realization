@@ -1,4 +1,5 @@
 import { GroupType } from '../../../enums';
+export * from './dto';
 
 export interface IDefaultGroup {
   _id: string;
@@ -11,22 +12,17 @@ export interface IDefaultGoal {
   title: string;
 }
 
-export interface IAddDefaultGoal {
+export interface IDefaultGoalTemplate {
   title: string;
 }
 
-export interface CreateGoalDto {
-  title: string;
-  typeId: string;
+export interface NormalizedGoals {
+  byId: {
+    [key: string]: IDefaultGoal;
+  };
+  allIds: string[];
 }
 
-export interface UpdateGoalDto {
-  id: string;
-  title: string;
-  typeId: string;
-}
-
-export interface DeleteGoalDto {
-  id: string;
-  typeId: string;
+export interface AddGoalStatus {
+  isSaving: boolean;
 }
