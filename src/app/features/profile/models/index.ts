@@ -10,10 +10,14 @@ export interface IDefaultGroup {
 export interface IDefaultGoal {
   _id: string;
   title: string;
+
+  isSaving?: boolean;
+  isDeleting?: boolean;
 }
 
-export interface IDefaultGoalTemplate {
+export interface INewDefaultGoal {
   title: string;
+  isSaving?: boolean;
 }
 
 export interface NormalizedGoals {

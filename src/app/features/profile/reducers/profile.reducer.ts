@@ -1,5 +1,5 @@
 import { ProfileActionTypes, ProfileActionsUnion } from '../actions/profile.actions';
-import { IDefaultGoal, NormalizedGoals, AddGoalStatus } from '../models';
+import { IDefaultGoal, NormalizedGoals, INewDefaultGoal } from '../models';
 import { GroupType } from '../../../enums';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { enumToArray } from '../../../utils/common';
@@ -23,8 +23,8 @@ export interface State {
     [key: string]: NormalizedGoals;
   };
 
-  addGoalStatus: {
-    [key: string]: AddGoalStatus;
+  newGoal: {
+    [key: string]: INewDefaultGoal;
   };
 
   error: string;
@@ -35,7 +35,7 @@ export const initialState: State = {
 
   groupsId: undefined,
   goals: undefined,
-  addGoalStatus: undefined,
+  newGoal: undefined,
 
   error: undefined,
 };
@@ -51,14 +51,14 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
     case ProfileActionTypes.LoadGoalsSuccess: {
       const goals = {} as { [key: string]: NormalizedGoals };
       const groupsId = {} as { [key: string]: string };
-      const addGoalStatus = {} as { [key: string]: AddGoalStatus };
+      const newGoal = {} as { [key: string]: INewDefaultGoal };
 
       action.payload
         .filter(g => GroupTypes.indexOf(g.type) !== -1)
         .forEach(group => {
           groupsId[group.type] = group._id;
           goals[group.type] = group.goals.reduce(goalsNormalizer, { byId: {}, allIds: [] } as NormalizedGoals);
-          addGoalStatus[group.type] = undefined;
+          newGoal[group.type] = undefined;
         });
 
       return {
@@ -67,7 +67,7 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
         error: undefined,
         groupsId,
         goals,
-        addGoalStatus,
+        newGoal,
       };
     }
 
@@ -76,6 +76,28 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
         ...initialState,
         loading: false,
         error: 'Something went wrong on loading profile',
+      };
+    }
+
+    case ProfileActionTypes.UpdateGoal: {
+      const { groupType, goal } = action.payload;
+      const groupGoals = state.goals[groupType];
+
+      return {
+        ...state,
+        goals: {
+          ...state.goals,
+          [groupType]: {
+            byId: {
+              ...groupGoals.byId,
+              [goal._id]: {
+                ...groupGoals.byId[goal._id],
+                isSaving: true,
+              },
+            },
+            allIds: groupGoals.allIds,
+          },
+        },
       };
     }
 
@@ -90,9 +112,12 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
           [groupType]: {
             byId: {
               ...groupGoals.byId,
-              [goal._id]: { ...goal },
+              [goal._id]: {
+                ...goal,
+                isSaving: false,
+              },
             },
-            allIds: [...groupGoals.allIds],
+            allIds: groupGoals.allIds,
           },
         },
       };
@@ -109,9 +134,35 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
           [groupType]: {
             byId: {
               ...groupGoals.byId,
-              [goal._id]: { ...groupGoals.byId[goal._id] },
+              [goal._id]: {
+                ...groupGoals.byId[goal._id],
+                isSaving: false,
+                isDeleting: false,
+              },
             },
             allIds: [...groupGoals.allIds],
+          },
+        },
+      };
+    }
+
+    case ProfileActionTypes.DeleteGoal: {
+      const { groupType, goal } = action.payload;
+      const groupGoals = state.goals[groupType];
+
+      return {
+        ...state,
+        goals: {
+          ...state.goals,
+          [groupType]: {
+            byId: {
+              ...groupGoals.byId,
+              [goal._id]: {
+                ...groupGoals.byId[goal._id],
+                isDeleting: true,
+              },
+            },
+            allIds: groupGoals.allIds,
           },
         },
       };
@@ -142,9 +193,9 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoalStatus: {
-          ...state.addGoalStatus,
-          [type]: { isSaving: false },
+        newGoal: {
+          ...state.newGoal,
+          [type]: { title: '' },
         },
       };
     }
@@ -154,8 +205,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoalStatus: {
-          ...state.addGoalStatus,
+        newGoal: {
+          ...state.newGoal,
           [type]: undefined,
         },
       };
@@ -166,9 +217,12 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoalStatus: {
-          ...state.addGoalStatus,
-          [groupType]: { isSaving: true },
+        newGoal: {
+          ...state.newGoal,
+          [groupType]: {
+            ...state.newGoal[groupType],
+            isSaving: true,
+          },
         },
       };
     }
@@ -189,8 +243,8 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
             allIds: [...groupGoals.allIds, goal._id],
           },
         },
-        addGoalStatus: {
-          ...state.addGoalStatus,
+        newGoal: {
+          ...state.newGoal,
           [groupType]: undefined,
         },
       };
@@ -201,9 +255,12 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
 
       return {
         ...state,
-        addGoalStatus: {
-          ...state.addGoalStatus,
-          [type]: { isSaving: false },
+        newGoal: {
+          ...state.newGoal,
+          [type]: {
+            ...state.newGoal[type],
+            isSaving: false,
+          },
         },
       };
     }
@@ -250,9 +307,9 @@ export const selectGroupsIds = createSelector(
   (state: State) => state.groupsId,
 );
 
-export const selectAddGoalStatus = createSelector(
+export const selectNewGoal = createSelector(
   selectProfileState,
-  (state: State) => state.addGoalStatus,
+  (state: State) => state.newGoal,
 );
 
 export const selectError = createSelector(

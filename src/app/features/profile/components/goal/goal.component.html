@@ -8,7 +8,7 @@
         placeholder="Goal title"
         [formControl]="titleCtrl"
         maxlength="500"
-        [readonly]="isSaving"
+        [readonly]="goal.isSaving"
       ></textarea>
       <mat-hint align="end">{{ titleCtrl.value.length }} / 500</mat-hint>
     </mat-form-field>
@@ -18,33 +18,33 @@
     <ng-container *ngIf="isEdit; else goalActions">
       <button
         class="has-loading"
-        [class.is-loading]="isSaving"
+        [class.is-loading]="goal.isSaving"
         mat-icon-button
         color="primary"
         (click)="save()"
-        [disabled]="isSaving || !titleCtrl.value"
+        [disabled]="goal.isSaving || !titleCtrl.value"
       >
         <mat-icon>save</mat-icon>
       </button>
       <button
         mat-icon-button
         (click)="toggleEdit()"
-        [disabled]="isSaving"
+        [disabled]="goal.isSaving"
       >
         <mat-icon>cancel</mat-icon>
       </button>
     </ng-container>
     <ng-template #goalActions>
-      <button mat-icon-button (click)="toggleEdit()" [disabled]="isDeleting">
+      <button mat-icon-button (click)="toggleEdit()" [disabled]="goal.isDeleting">
         <mat-icon>edit</mat-icon>
       </button>
       <button
         class="has-loading"
-        [class.is-loading]="isDeleting"
+        [class.is-loading]="goal.isDeleting"
         mat-icon-button
         color="warn"
         (click)="confirmDelete()"
-        [disabled]="isDeleting"
+        [disabled]="goal.isDeleting"
       >
         <mat-icon>delete</mat-icon>
       </button>

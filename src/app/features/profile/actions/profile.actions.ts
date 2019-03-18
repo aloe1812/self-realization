@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
-import { IDefaultGroup, IDefaultGoal, IDefaultGoalTemplate } from '../models';
+import { IDefaultGroup, IDefaultGoal, INewDefaultGoal } from '../models';
 import { GroupType } from '../../../enums';
 
 export enum ProfileActionTypes {
@@ -29,7 +29,7 @@ export interface GoalPayload {
 }
 
 export interface CreateGoalPayload {
-  goal: IDefaultGoalTemplate;
+  goal: INewDefaultGoal;
   groupType: GroupType;
 }
 

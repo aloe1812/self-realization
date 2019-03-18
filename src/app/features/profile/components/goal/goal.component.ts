@@ -1,4 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, OnChanges,
+         SimpleChanges, Output, EventEmitter, SimpleChange } from '@angular/core';
 import { IDefaultGoal, AddGoalStatus } from '../../models';
 import { MatDialog } from '@angular/material';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../core/components/confirm-dialog/confirm-dialog.component';
@@ -13,41 +14,25 @@ import { FormControl, Validators } from '@angular/forms';
 export class GoalComponent implements OnInit, OnChanges {
 
   @Input() goal: IDefaultGoal;
-  @Input() addGoalStatus: AddGoalStatus; // this component is an add goal component, if this input is not empty
 
   @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
   @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
 
   titleCtrl: FormControl;
-
-  isDeleting = false;
   isEdit = false;
-
-  // tslint:disable-next-line: variable-name
-  private _isSaving = false;
-
-  get isAdd() {
-    return !!this.addGoalStatus;
-  }
-
-  get isSaving() {
-    return this._isSaving || (this.addGoalStatus && this.addGoalStatus.isSaving);
-  }
-
-  set isSaving(value: boolean) {
-    this._isSaving = value;
-  }
+  isNewGoal = false;
 
   constructor(
     private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
-    if (this.isAdd) {
+    this.titleCtrl = new FormControl(this.goal.title, Validators.required);
+    this.isNewGoal = !this.goal._id;
+
+    if (this.isNewGoal) {
       this.isEdit = true;
     }
-
-    this.titleCtrl = new FormControl(this.goal.title, Validators.required);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -55,16 +40,14 @@ export class GoalComponent implements OnInit, OnChanges {
       return;
     }
 
-    if (changes.goal.currentValue.title === changes.goal.previousValue.title) { // same goal returned => update failed
-      this.isDeleting = false;
-      this.isSaving = false;
-    } else {
-      this.setPristine();
+    // toggle edit status if new goal was saved (i.e. title changed)
+    if (this.goalHasChanged(changes.goal)) {
+      this.isEdit = false;
     }
   }
 
   toggleEdit() {
-    if (this.isAdd) {
+    if (this.isNewGoal) {
       this.deleteGoal.next();
       return;
     }
@@ -81,13 +64,10 @@ export class GoalComponent implements OnInit, OnChanges {
       return;
     }
 
-    if (!this.isAdd) {
-      if (this.titleCtrl.value === this.goal.title) {
-        this.isEdit = false;
-        return;
-      }
-
-      this.isSaving = true;
+    // toggle edit status is title was not changed
+    if (!this.isNewGoal && (this.titleCtrl.value === this.goal.title)) {
+      this.isEdit = false;
+      return;
     }
 
     this.updateGoal.next({
@@ -107,16 +87,13 @@ export class GoalComponent implements OnInit, OnChanges {
     dialogRef.afterClosed()
       .subscribe(res => {
         if (res === 'confirm') {
-          this.isDeleting = true;
           this.deleteGoal.next(this.goal);
         }
       });
   }
 
-  private setPristine() {
-    this.isEdit = false;
-    this.isSaving = false;
-    this.isDeleting = false;
+  private goalHasChanged(change: SimpleChange) {
+    return change.currentValue.title !== change.previousValue.title;
   }
 
 }

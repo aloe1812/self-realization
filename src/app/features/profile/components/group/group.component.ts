@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { IDefaultGoal, IDefaultGoalTemplate, AddGoalStatus } from '../../models';
+import { IDefaultGoal, INewDefaultGoal } from '../../models';
 import { Groups } from '../../../../texts/texts';
 import { GroupType } from '../../../../enums';
 
@@ -31,20 +31,19 @@ export class GroupComponent implements OnInit {
 
   @Input() goals: IDefaultGoal[];
   @Input() type: GroupType;
-  @Input() addGoalStatus: AddGoalStatus;
-
-  @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
-  @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
-  @Output() createGoal: EventEmitter<IDefaultGoalTemplate> = new EventEmitter();
+  @Input() newGoal: INewDefaultGoal;
 
   @Output() addGoal = new EventEmitter();
   @Output() removeGoal = new EventEmitter();
 
-  addGoalTemplate = { title: '' };
+  @Output() updateGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
+  @Output() deleteGoal: EventEmitter<IDefaultGoal> = new EventEmitter();
+  @Output() createGoal: EventEmitter<INewDefaultGoal> = new EventEmitter();
+
   detailsState = 'show';
 
   get title() {
-    return Groups[this.type].title;
+    return Groups[this.type].title; // move get title by type to service
   }
 
   get icon() {
@@ -76,7 +75,7 @@ export class GroupComponent implements OnInit {
     this.deleteGoal.next($event);
   }
 
-  onCreateGoal($event: IDefaultGoalTemplate) {
+  onCreateGoal($event: INewDefaultGoal) {
     this.createGoal.next($event);
   }
 

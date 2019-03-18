@@ -8,19 +8,20 @@
   </div>
   <ng-template #profileBlock>
     <app-about [user]="user$ | async"></app-about>
-    <app-group
-      *ngFor="let group of groups$ | async; trackBy: trackByFn"
-      [type]="group.type"
-      [goals]="group.goals"
-      [addGoalStatus]="(addGoalStatus$ | async)[group.type]"
+    <ng-container *ngIf="(newGoal$ | async) as newGoal">
+      <app-group
+        *ngFor="let group of groups$ | async; trackBy: trackByFn"
+        [type]="group.type"
+        [goals]="group.goals"
+        [newGoal]="newGoal[group.type]"
 
-      (addGoal)="onAddGoal(group.type)"
-      (removeGoal)="onRemoveGoal(group.type)"
+        (addGoal)="onAddGoal(group.type)"
+        (removeGoal)="onRemoveGoal(group.type)"
 
-      (createGoal)="onCreateGoal($event, group.type)"
+        (createGoal)="onCreateGoal($event, group.type)"
 
-      (updateGoal)="onUpdateGoal($event, group.type)"
-      (deleteGoal)="onDeleteGoal($event, group.type)"
-    ></app-group>
-  </ng-template>
+        (updateGoal)="onUpdateGoal($event, group.type)"
+        (deleteGoal)="onDeleteGoal($event, group.type)"
+      ></app-group>
+    </ng-container>
 </ng-template>

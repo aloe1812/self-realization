@@ -16,11 +16,10 @@
         (deleteGoal)="onDeleteGoal($event)"
       ></app-goal>
       <app-goal
-        *ngIf="!!addGoalStatus"
-        [goal]="addGoalTemplate"
+        *ngIf="!!newGoal"
+        [goal]="newGoal"
         (updateGoal)="onCreateGoal($event)"
         (deleteGoal)="onRemoveGoal()"
-        [addGoalStatus]="addGoalStatus"
       ></app-goal>
       <div>
         <button
