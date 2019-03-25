@@ -1,0 +1,10 @@
+<div>
+  <a [routerLink]="['/day', prevDay]">{{ prevDay }}</a>
+  <div class="date">{{ currentDay }}</div>
+  <a [routerLink]="['/day', nextDay]">{{ nextDay }}</a>
+</div>
+<div>
+  <input [matDatepicker]="picker" [formControl]="dateControl" placeholder="Choose a date">
+  <mat-datepicker #picker></mat-datepicker>
+  <button mat-raised-button (click)="picker.open()">Open</button>
+</div>
