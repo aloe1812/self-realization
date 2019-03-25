@@ -3,6 +3,7 @@ import { IDefaultGoal, NormalizedGoals, INewDefaultGoal } from '../models';
 import { GroupType } from '../../../enums';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { enumToArray } from '../../../utils/common';
+import produce from 'immer';
 
 const GroupTypes = enumToArray(GroupType);
 
@@ -40,12 +41,11 @@ export const initialState: State = {
   error: undefined,
 };
 
-export function reducer(state = initialState, action: ProfileActionsUnion): State {
+export const reducer = produce((draftState: State, action: ProfileActionsUnion): State => {
+
   switch (action.type) {
     case ProfileActionTypes.LoadGoals: {
-      return {
-        ...initialState,
-      };
+      return initialState;
     }
 
     case ProfileActionTypes.LoadGoalsSuccess: {
@@ -61,215 +61,102 @@ export function reducer(state = initialState, action: ProfileActionsUnion): Stat
           newGoal[group.type] = undefined;
         });
 
-      return {
-        ...state,
-        loading: false,
-        error: undefined,
-        groupsId,
-        goals,
-        newGoal,
-      };
+      draftState.loading = false;
+      draftState.error = undefined;
+      draftState.groupsId = groupsId;
+      draftState.goals = goals;
+      draftState.newGoal = newGoal;
+
+      return;
     }
 
     case ProfileActionTypes.LoadGoalsFail: {
-      return {
-        ...initialState,
-        loading: false,
-        error: 'Something went wrong on loading profile',
-      };
+      draftState.loading = false;
+      draftState.error = 'Something went wrong on loading profile';
+      return;
     }
 
     case ProfileActionTypes.UpdateGoal: {
       const { groupType, goal } = action.payload;
-      const groupGoals = state.goals[groupType];
-
-      return {
-        ...state,
-        goals: {
-          ...state.goals,
-          [groupType]: {
-            byId: {
-              ...groupGoals.byId,
-              [goal._id]: {
-                ...groupGoals.byId[goal._id],
-                isSaving: true,
-              },
-            },
-            allIds: groupGoals.allIds,
-          },
-        },
-      };
+      draftState.goals[groupType].byId[goal._id].isSaving = true;
+      return;
     }
 
     case ProfileActionTypes.UpdateGoalSuccess: {
       const { groupType, goal } = action.payload;
-      const groupGoals = state.goals[groupType];
 
-      return {
-        ...state,
-        goals: {
-          ...state.goals,
-          [groupType]: {
-            byId: {
-              ...groupGoals.byId,
-              [goal._id]: {
-                ...goal,
-                isSaving: false,
-              },
-            },
-            allIds: groupGoals.allIds,
-          },
-        },
+      draftState.goals[groupType].byId[goal._id] = {
+        ...goal,
+        isSaving: false,
       };
+      return;
     }
 
     case ProfileActionTypes.UpdateGoalFail: {
       const { goalData: { groupType, goal } } = action.payload;
-      const groupGoals = state.goals[groupType];
 
-      return {
-        ...state,
-        goals: {
-          ...state.goals,
-          [groupType]: {
-            byId: {
-              ...groupGoals.byId,
-              [goal._id]: {
-                ...groupGoals.byId[goal._id],
-                isSaving: false,
-                isDeleting: false,
-              },
-            },
-            allIds: [...groupGoals.allIds],
-          },
-        },
-      };
+      draftState.goals[groupType].byId[goal._id].isSaving = false;
+      draftState.goals[groupType].byId[goal._id].isDeleting = false;
+      return;
     }
 
     case ProfileActionTypes.DeleteGoal: {
       const { groupType, goal } = action.payload;
-      const groupGoals = state.goals[groupType];
 
-      return {
-        ...state,
-        goals: {
-          ...state.goals,
-          [groupType]: {
-            byId: {
-              ...groupGoals.byId,
-              [goal._id]: {
-                ...groupGoals.byId[goal._id],
-                isDeleting: true,
-              },
-            },
-            allIds: groupGoals.allIds,
-          },
-        },
-      };
+      draftState.goals[groupType].byId[goal._id].isDeleting = false;
+      return;
     }
 
     case ProfileActionTypes.DeleteGoalSuccess: {
       const { groupType, goal } = action.payload;
-      const groupGoals = state.goals[groupType];
-      const { [goal._id]: deleted, ...restById } = groupGoals.byId;
-      const newIds = groupGoals.allIds.filter(id => id !== goal._id);
 
-      return {
-        ...state,
-        goals: {
-          ...state.goals,
-          [groupType]: {
-            byId: {
-              ...restById,
-            },
-            allIds: newIds,
-          },
-        },
-      };
+      delete draftState.goals[groupType].byId[goal._id];
+      draftState.goals[groupType].allIds = draftState.goals[groupType].allIds.filter(id => id !== goal._id);
+      return;
     }
 
     case ProfileActionTypes.AddGoal: {
       const type = action.payload;
 
-      return {
-        ...state,
-        newGoal: {
-          ...state.newGoal,
-          [type]: { title: '' },
-        },
-      };
+      draftState.newGoal[type] = { title: '' };
+      return;
     }
 
     case ProfileActionTypes.RemoveGoal: {
       const type = action.payload;
 
-      return {
-        ...state,
-        newGoal: {
-          ...state.newGoal,
-          [type]: undefined,
-        },
-      };
+      draftState.newGoal[type] = undefined;
+      return;
     }
 
     case ProfileActionTypes.CreateGoal: {
       const { groupType } = action.payload;
 
-      return {
-        ...state,
-        newGoal: {
-          ...state.newGoal,
-          [groupType]: {
-            ...state.newGoal[groupType],
-            isSaving: true,
-          },
-        },
-      };
+      draftState.newGoal[groupType].isSaving = true;
+      return;
     }
 
     case ProfileActionTypes.CreateGoalSuccess: {
       const { groupType, goal } = action.payload;
-      const groupGoals = state.goals[groupType];
 
-      return {
-        ...state,
-        goals: {
-          ...state.goals,
-          [groupType]: {
-            byId: {
-              ...groupGoals.byId,
-              [goal._id]: goal,
-            },
-            allIds: [...groupGoals.allIds, goal._id],
-          },
-        },
-        newGoal: {
-          ...state.newGoal,
-          [groupType]: undefined,
-        },
-      };
+      draftState.goals[groupType].byId[goal._id] = goal;
+      draftState.goals[groupType].allIds.push(goal._id);
+      draftState.newGoal[groupType] = undefined;
+      return;
     }
 
     case ProfileActionTypes.CreateGoalFail: {
       const type = action.payload;
 
-      return {
-        ...state,
-        newGoal: {
-          ...state.newGoal,
-          [type]: {
-            ...state.newGoal[type],
-            isSaving: false,
-          },
-        },
-      };
+      draftState.newGoal[type].isSaving = false;
+      return;
     }
 
     default:
-      return state;
+      return draftState;
   }
-}
 
+}, initialState);
 
 export const selectProfileState = createFeatureSelector<State>('profile');
 
