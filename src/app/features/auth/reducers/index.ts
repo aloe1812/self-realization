@@ -4,6 +4,7 @@ import {
 } from '@ngrx/store';
 import { AuthActionsUnion, AuthActionTypes } from '../actions/auth.actions';
 import { extractErrorMessage } from '../../../utils/common';
+import produce from 'immer';
 
 export interface State {
   error: string;
@@ -17,50 +18,42 @@ export const initialState: State = {
   registerPending: false,
 };
 
-export function reducer(state = initialState, action: AuthActionsUnion): State {
+export const reducer = produce((draftState: State, action: AuthActionsUnion): State => {
   switch (action.type) {
     case AuthActionTypes.Login: {
-      return {
-        ...state,
-        error: undefined,
-        loginPending: true,
-        registerPending: false,
-      };
+      draftState.error = undefined;
+      draftState.loginPending = true;
+      draftState.registerPending = false;
+      return;
     }
 
     case AuthActionTypes.Register: {
-      return {
-        ...state,
-        error: undefined,
-        loginPending: false,
-        registerPending: true,
-      };
+      draftState.error = undefined;
+      draftState.loginPending = false;
+      draftState.registerPending = true;
+      return;
     }
 
     case AuthActionTypes.LoginSuccess:
     case AuthActionTypes.RegisterSuccess: {
-      return {
-        ...state,
-        error: undefined,
-        loginPending: false,
-        registerPending: false,
-      };
+      draftState.error = undefined;
+      draftState.loginPending = false;
+      draftState.registerPending = false;
+      return;
     }
 
     case AuthActionTypes.AuthFailure: {
-      return {
-        ...state,
-        error: extractErrorMessage(action.payload),
-        loginPending: false,
-        registerPending: false,
-      };
+      draftState.error = extractErrorMessage(action.payload);
+      draftState.loginPending = false;
+      draftState.registerPending = false;
+      return;
     }
 
     default: {
-      return state;
+      return draftState;
     }
   }
-}
+}, initialState);
 
 export const selectAuthState = createFeatureSelector<State>('auth');
 

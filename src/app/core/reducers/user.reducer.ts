@@ -1,5 +1,6 @@
 import { UserActionsUnion } from '../actions/user.actions';
 import { UserActionTypes } from '../actions/user.actions';
+import produce from 'immer';
 
 export interface State {
   userId: string;
@@ -13,34 +14,29 @@ export const initialState: State = {
   token: undefined,
 };
 
-export function reducer(state = initialState, action: UserActionsUnion): State {
+export const reducer = produce((draftState: State, action: UserActionsUnion): State => {
   switch (action.type) {
-
     case UserActionTypes.Save: {
       const token = action.payload.token;
-
       localStorage.setItem('sr-token', token);
 
-      return {
-        ...state,
-        userId: action.payload.id,
-        username: action.payload.username,
-        token,
-      };
+      draftState.userId = action.payload.id;
+      draftState.username = action.payload.username;
+      draftState.token = token;
+      return;
     }
 
     case UserActionTypes.Remove: {
       localStorage.removeItem('sr-token');
 
-      return {
-        ...state,
-        userId: undefined,
-        username: undefined,
-        token: undefined,
-      };
+      draftState.userId = undefined;
+      draftState.username = undefined;
+      draftState.token = undefined;
+      return;
     }
 
     default:
-      return state;
+      return draftState;
   }
-}
+}, initialState);
+
