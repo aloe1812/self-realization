@@ -11,6 +11,7 @@ export enum UserActionTypes {
 }
 
 export interface IUserDetails {
+  id: string;
   username: string;
   token: string;
 }

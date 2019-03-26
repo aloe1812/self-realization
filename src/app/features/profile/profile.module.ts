@@ -12,7 +12,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { ProfileEffects } from './effects/profile.effects';
 import { AboutComponent } from './components/about/about.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [ProfilePageComponent, GroupComponent, GoalComponent, AboutComponent],
@@ -28,7 +27,6 @@ import { SharedModule } from '../../shared/shared.module';
     MatCardModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule,
     StoreModule.forFeature('profile', fromProfile.reducer),
     EffectsModule.forFeature([ProfileEffects]),
   ],

@@ -19,10 +19,3 @@ export interface INewDefaultGoal {
   title: string;
   isSaving?: boolean;
 }
-
-export interface NormalizedGoals {
-  byId: {
-    [key: string]: IDefaultGoal;
-  };
-  allIds: string[];
-}

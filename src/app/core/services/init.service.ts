@@ -29,6 +29,7 @@ export class InitService {
           user => { // valid => save user info
             this.store.dispatch(new UserActions.Save({
               token,
+              id: user.id,
               username: user.username,
             }));
             resolve();

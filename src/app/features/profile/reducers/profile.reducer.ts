@@ -1,17 +1,12 @@
 import { ProfileActionTypes, ProfileActionsUnion } from '../actions/profile.actions';
-import { IDefaultGoal, NormalizedGoals, INewDefaultGoal } from '../models';
+import { IDefaultGoal, INewDefaultGoal } from '../models';
 import { GroupType } from '../../../enums';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { enumToArray } from '../../../utils/common';
+import { enumToArray, goalsNormalizer } from '../../../utils/common';
 import produce from 'immer';
+import { NormalizedItems } from '../../../models';
 
 const GroupTypes = enumToArray(GroupType);
-
-function goalsNormalizer(result: NormalizedGoals, goal: IDefaultGoal) {
-  result.byId[goal._id] = goal;
-  result.allIds.push(goal._id);
-  return result;
-}
 
 export interface State {
   loading: boolean;
@@ -21,7 +16,7 @@ export interface State {
   };
 
   goals: {
-    [key: string]: NormalizedGoals;
+    [key: string]: NormalizedItems<IDefaultGoal>;
   };
 
   newGoal: {
@@ -49,7 +44,7 @@ export const reducer = produce((draftState: State, action: ProfileActionsUnion):
     }
 
     case ProfileActionTypes.LoadGoalsSuccess: {
-      const goals = {} as { [key: string]: NormalizedGoals };
+      const goals = {} as { [key: string]: NormalizedItems<IDefaultGoal> };
       const groupsId = {} as { [key: string]: string };
       const newGoal = {} as { [key: string]: INewDefaultGoal };
 
@@ -57,7 +52,10 @@ export const reducer = produce((draftState: State, action: ProfileActionsUnion):
         .filter(g => GroupTypes.indexOf(g.type) !== -1)
         .forEach(group => {
           groupsId[group.type] = group._id;
-          goals[group.type] = group.goals.reduce(goalsNormalizer, { byId: {}, allIds: [] } as NormalizedGoals);
+          goals[group.type] = group.goals.reduce(
+            goalsNormalizer,
+            { byId: {}, allIds: [] } as NormalizedItems<IDefaultGoal>,
+          );
           newGoal[group.type] = undefined;
         });
 

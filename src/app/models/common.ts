@@ -3,3 +3,10 @@ export interface ApiError {
   error: string;
   message: string;
 }
+
+export interface NormalizedItems<T> {
+  byId: {
+    [key: string]: T;
+  };
+  allIds: string[];
+}

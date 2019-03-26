@@ -1,5 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ApiError } from '../models/common';
+import { ApiError, NormalizedItems } from '../models/common';
+import { IDefaultGoal } from '../features/profile/models';
+import { Goal } from '../features/day/models';
 
 export function extractErrorMessage(error: HttpErrorResponse): string {
   if (error.status >= 500) {
@@ -15,4 +17,10 @@ export function extractErrorMessage(error: HttpErrorResponse): string {
 
 export function enumToArray(enumObject: object): string[] {
   return Object.keys(enumObject).map(key => enumObject[key]);
+}
+
+export function goalsNormalizer<T extends Goal & IDefaultGoal>(result: NormalizedItems<T>, goal: T): NormalizedItems<T> {
+  result.byId[goal._id] = goal;
+  result.allIds.push(goal._id);
+  return result;
 }

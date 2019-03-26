@@ -11,7 +11,7 @@ export class UserService {
   ) { }
 
   getMe(token: string) {
-    return this.http.get<{username: string}>('/auth/me', {
+    return this.http.get<{id: string, username: string}>('/auth/me', {
       headers: new HttpHeaders({
         Authorization: `Bearer ${token}`,
       }),
