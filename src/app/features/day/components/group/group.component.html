@@ -1,0 +1,18 @@
+<article [ngClass]="group.type">
+  <mat-toolbar class="group-title">
+    <img [src]="icon" alt="">
+    <span>{{ title }}</span>
+    <button
+      mat-icon-button
+      (click)="toggleDetails()"
+    >
+      <mat-icon [@toggle]="detailsState">expand_more</mat-icon>
+    </button>
+  </mat-toolbar>
+  <div class="main">
+    <div class="details" [@dropdown]="detailsState">{{ description }}</div>
+    <div class="goals">
+      {{ goals | json }}
+    </div>
+  </div>
+</article>

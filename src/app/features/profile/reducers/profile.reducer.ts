@@ -1,12 +1,9 @@
 import { ProfileActionTypes, ProfileActionsUnion } from '../actions/profile.actions';
 import { IDefaultGoal, INewDefaultGoal } from '../models';
-import { GroupType } from '../../../enums';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { enumToArray, goalsNormalizer } from '../../../utils/common';
+import { goalsNormalizer, groupSorter, GroupTypes } from '../../../utils/common';
 import produce from 'immer';
 import { NormalizedItems } from '../../../models';
-
-const GroupTypes = enumToArray(GroupType);
 
 export interface State {
   loading: boolean;
@@ -171,11 +168,7 @@ export const selectGroups = createSelector(
     }
 
     return Object.keys(state.goals)
-      .sort((a: GroupType, b: GroupType) => {
-        const indexA = GroupTypes.indexOf(a);
-        const indexB = GroupTypes.indexOf(b);
-        return indexA - indexB;
-      })
+      .sort(groupSorter)
       .map(type => {
         const normalized = state.goals && state.goals[type];
 

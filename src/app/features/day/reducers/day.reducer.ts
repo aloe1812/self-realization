@@ -1,12 +1,10 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { enumToArray, goalsNormalizer } from '../../../utils/common';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { goalsNormalizer, GroupTypes, groupSorter } from '../../../utils/common';
 import { GroupType } from '../../../enums';
 import { DayActionsUnion, DayActionTypes } from '../actions/day.actions';
 import produce from 'immer';
 import { Goal } from '../models';
 import { NormalizedItems } from '../../../models';
-
-const GroupTypes = enumToArray(GroupType);
 
 export interface NormalizedGroup {
   id: string;
@@ -75,4 +73,29 @@ export const reducer = produce((draftState: State, action: DayActionsUnion): Sta
   }
 }, initialState);
 
-export const selectProfileState = createFeatureSelector<State>('day');
+export const selectDayState = createFeatureSelector<State>('day');
+
+export const selectLoading = createSelector(
+  selectDayState,
+  (state: State) => state.loading,
+);
+
+export const selectGroups = createSelector(
+  selectDayState,
+  (state: State) => {
+    if (!state.goals) {
+      return undefined;
+    }
+
+    return Object.keys(state.goals)
+      .sort(groupSorter)
+      .map(type => {
+        const normalized = state.goals && state.goals[type];
+
+        return {
+          group: state.groups[type],
+          goals: normalized ? normalized.allIds.map(id => normalized.byId[id]) : undefined,
+        };
+      });
+  },
+);
