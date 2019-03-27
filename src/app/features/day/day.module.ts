@@ -5,7 +5,7 @@ import { DayRoutingModule } from './day-routing.module';
 import { SelectDayComponent } from './components/select-day/select-day.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatNativeDateModule, DateAdapter, MatIconModule, MatButtonModule, MatToolbarModule } from '@angular/material';
+import { MatNativeDateModule, DateAdapter, MatIconModule, MatButtonModule, MatToolbarModule, MatSliderModule } from '@angular/material';
 import { CustomDateAdapter } from './custom-date-adapter';
 import { StoreModule } from '@ngrx/store';
 import * as fromDay from './reducers/day.reducer';
@@ -24,6 +24,7 @@ import { GoalComponent } from './components/goal/goal.component';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatSliderModule,
     FormsModule,
     ReactiveFormsModule,
     StoreModule.forFeature('day', fromDay.reducer),

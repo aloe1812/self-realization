@@ -1,3 +1,25 @@
-<p>
-  goal works!
-</p>
+<article class="goal">
+  <div class="header">
+    <div class="title">{{ goal.title }}</div>
+    <div class="meta">
+      <div class="complete">{{ goal.complete }}%</div>
+      <div>
+        <button mat-icon-button>
+          <mat-icon>expand_more</mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="progress">
+      <mat-slider
+        thumbLabel
+      >
+      </mat-slider>
+    </div>
+    <div class="helpers"></div>
+  </div>
+</article>

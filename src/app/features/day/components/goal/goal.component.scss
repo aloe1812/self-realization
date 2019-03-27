@@ -1,0 +1,12 @@
+.goal {
+  display: flex;
+  align-items: center;
+  background: #EBEBEB;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+:host {
+  display: block;
+  margin: 10px 0;
+}

@@ -78,4 +78,8 @@ export class GroupComponent implements OnInit {
     this.detailsState = this.detailsState === 'show' ? 'hide' : 'show';
   }
 
+  trackByFn(index: number, item: Goal) {
+    return item._id;
+  }
+
 }

@@ -12,7 +12,10 @@
   <div class="main">
     <div class="details" [@dropdown]="detailsState">{{ description }}</div>
     <div class="goals">
-      {{ goals | json }}
+      <app-goal
+        *ngFor="let goal of goals; trackBy: trackByFn"
+        [goal]="goal"
+      ></app-goal>
     </div>
   </div>
 </article>
